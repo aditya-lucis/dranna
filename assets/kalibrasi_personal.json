@@ -1,0 +1,17 @@
+{
+  "deskripsi": "Kalibrasi personal kata emosi ternormalisasi [-1.0, 1.0]",
+  "kata": {
+    "senang": [0.85, 0.45],
+    "tenang": [0.60, -0.60],
+    "antusias": [0.75, 0.85],
+    "sedih": [-0.65, -0.45],
+    "mati_rasa": [-0.50, -0.85],
+    "cemas": [-0.55, 0.65],
+    "panik": [-0.85, 0.95],
+    "marah": [-0.75, 0.75],
+    "lelah": [-0.35, -0.65],
+    "bangga": [0.65, 0.35],
+    "hangat": [0.70, 0.10],
+    "leganya": [0.80, -0.20]
+  }
+}
