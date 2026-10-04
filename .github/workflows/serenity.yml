@@ -1,0 +1,22 @@
+name: serenity
+
+on: [push, pull_request]
+
+jobs:
+  gerbang:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pasang dependensi
+        run: pip install -e .[dev]
+      - name: Gerbang 1 - Doctor Verifikasi Lingkungan
+        run: python anna/src/reset/doctor.py
+      - name: Gerbang 2 - Ban API Uzur
+        run: python tools/ban_deprecated.py
+      - name: Gerbang 3 - Test Suite
+        run: pytest anna/tests -q --tb=short
+      - name: Gerbang 3b - Uji Mandiri Skenario Krisis (Tanpa Jaringan)
+        run: pytest anna/tests -q -k krisis --tb=short

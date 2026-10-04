@@ -1,0 +1,43 @@
+[project]
+name = "anna-reed"
+version = "0.1.0"
+description = "Dr. Anna Reed - Mental Health AI Companion (Project Serenity)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.5,<3",
+    "scipy>=1.18,<2",
+    "langchain>=1.4,<2",
+    "langgraph>=1.2,<2",
+    "langchain-google-genai>=1.2",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.9",
+    "fastapi>=0.141",
+    "uvicorn[standard]>=0.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+audio = [
+    "faster-whisper>=1.0",
+    "silero-vad>=5.0",
+]
+vision = [
+    "mediapipe>=0.10.30",
+    "opencv-python-headless>=4.10",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["anna/tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-q --tb=short"
+markers = [
+    "krisis: pengujian skenario krisis dan keselamatan (SINTETIS)",
+]
