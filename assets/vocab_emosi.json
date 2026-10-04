@@ -1,0 +1,8 @@
+{
+  "deskripsi": "Kamus kosakata emosi yang tumbuh dari pengguna sendiri",
+  "personal": {
+    "ambah": [-0.1, 0.3],
+    "geram": [-0.7, 0.8],
+    "plong": [0.8, -0.3]
+  }
+}

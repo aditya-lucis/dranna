@@ -1,0 +1,27 @@
+{
+  "deskripsi": "Korpus sintetis pengujian kegagalan empati: 12 pelanggaran + 8 mirip-tapi-sah",
+  "pelanggaran": [
+    {"teks": "Yang penting kamu masih sehat ya, banyak bersyukur aja!", "jenis": "toxic_positivity"},
+    {"teks": "Jangan sedih lagi, ayo terus tersenyum!", "jenis": "toxic_positivity"},
+    {"teks": "Banyak bersyukur biar hati kamu tenang.", "jenis": "toxic_positivity"},
+    {"teks": "Setidaknya kamu masih punya pekerjaan tetap.", "jenis": "silver_lining"},
+    {"teks": "Sekurang-kurangnya masih ada keluarga yang menolong.", "jenis": "silver_lining"},
+    {"teks": "Masih lebih baik dari orang yang di PHK kemarin.", "jenis": "silver_lining"},
+    {"teks": "Sebenarnya masalahmu tidak seburuk itu kok.", "jenis": "gaslighting"},
+    {"teks": "Kamu cuma overthinking aja dan berlebihan.", "jenis": "gaslighting"},
+    {"teks": "Skormu naik minggu ini, kenapa kamu masih murung?", "jenis": "gaslighting"},
+    {"teks": "Coba meditasi tiap pagi pasti kamu sembuh.", "jenis": "premature_fix"},
+    {"teks": "Harusnya olahraga teratur biar tidak lemas.", "jenis": "premature_fix"},
+    {"teks": "Orang lain lebih susah hidupnya daripada kamu.", "jenis": "comparative"}
+  ],
+  "mirip_tapi_sah": [
+    {"teks": "Rasa bersyukur yang kamu pilih sendiri itu terdengar menenangkan.", "catatan": "eksplorasi makna pengguna"},
+    {"teks": "Kelelahanmu nyata — masuk akal setelah minggu seberat ini.", "catatan": "validasi kontekstual"},
+    {"teks": "Aku mendengarkan, ceritakan bagian mana yang paling berat.", "catatan": "pertanyaan terbuka"},
+    {"teks": "Tidak apa-apa merasa sedih hari ini, kamu tidak harus kuat terus.", "catatan": "antidote toxic positivity"},
+    {"teks": "Kubaca betapa rumitnya situasimu saat ini.", "catatan": "refleksi perilaku"},
+    {"teks": "Kita jeda dulu ya, kalau kamu butuh istirahat.", "catatan": "menghormati ritme"},
+    {"teks": "Setiap perasaan yang datang berhak punya ruang.", "catatan": "validasi Linehan level 4"},
+    {"teks": "Aku di sini menemanimu melewati malam ini.", "catatan": "kehadiran murni"}
+  ]
+}
