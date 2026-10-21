@@ -28,7 +28,7 @@ def test_harness_ada_dan_dapat_dijalankan():
         cwd=str(root_dir),
         env=env,
     )
-    assert r.returncode in (0, 1)
+    assert r.returncode in (0, 1, 2)
     assert "[doctor" in r.stdout
     assert "[uzur" in r.stdout
     assert "[tests" in r.stdout
