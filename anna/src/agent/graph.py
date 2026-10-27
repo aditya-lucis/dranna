@@ -122,7 +122,13 @@ def buat_node_generate(model: BaseChatModel | None = None):
 
         try:
             res = llm.invoke(chat_input)
-            draft = res.content if isinstance(res.content, str) else str(res.content)
+            c = res.content
+            if isinstance(c, str):
+                draft = c
+            elif isinstance(c, list):
+                draft = "".join(part.get("text", "") if isinstance(part, dict) else str(part) for part in c)
+            else:
+                draft = str(c)
         except Exception as e:
             draft = (
                 "Aku di sini mendengarkanmu. Pelan-pelan saja, kita lewati ini satu langkah "
