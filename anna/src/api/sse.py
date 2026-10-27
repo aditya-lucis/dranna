@@ -9,7 +9,10 @@ from anna.src.agent.streaming import stream_companion
 from anna.src.agent.checkpoint import get_default_checkpointer
 from anna.src.agent.graph import create_companion_graph
 
+from anna.src.px.healthz import router_healthz
+
 app = FastAPI(title="Project Serenity SSE API", version="1.0.0")
+app.include_router(router_healthz)
 
 # Checkpointer singleton untuk sesi
 _checkpointer = get_default_checkpointer()
