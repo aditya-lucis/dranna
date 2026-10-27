@@ -7,7 +7,8 @@ def cek_seimbang(kalimat: str) -> dict:
     dan bukan sekadar dorongan optimisme beracun (toxic positivity).
     """
     k = kalimat.lower()
-    if any(w in k for w in ["hebat", "pasti bisa", "kuat", "semangat"]):
+    kata_positif = ["hebat", "pasti bisa", "kuat", "semangat", "hikmah", "berpikir positif", "jangan sedih"]
+    if any(w in k for w in kata_positif):
         if not any(w in k for w in ["dan", "meski", "tapi", "walau"]):
             return {"seimbang": False, "masalah": "positif-saja tanpa akomodasi"}
     return {"seimbang": True}

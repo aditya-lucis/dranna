@@ -51,6 +51,9 @@ LARANGAN = [
     "jelaskan detailnya",
     "kembalikan aku ke situasinya",
     "kambilkan aku ke situasinya",
+    "ceritakan detail",
+    "kronologi",
+    "detail peristiwa",
 ]
 
 

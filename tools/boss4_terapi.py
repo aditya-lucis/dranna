@@ -1,7 +1,8 @@
 # tools/boss4_terapi.py — harness BOSS #4: Percakapan Terapeutik (Transisi 8 Giliran)
+import os
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
 
 from anna.src.piv.engine import pilih_teknik
 from anna.src.piv.governor import StyleGovernor

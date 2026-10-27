@@ -4,8 +4,8 @@ import os
 import sys
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT_DIR))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
 
 from anna.src.pii.oars import pilih_giliran
 from anna.src.pii.chunk import gate_chunk, potong_chunk

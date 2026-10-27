@@ -1,7 +1,8 @@
 # tools/boss3_penjaga.py — harness BOSS #3: Penjaga Pengetahuan
+import os
 import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
 
 import re
 from anna.src.piii.korpus import DokumenPsy

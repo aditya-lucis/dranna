@@ -45,3 +45,23 @@ b.add_node("router", router)
 b.set_entry_point("router")
 b.add_edge("router", END)
 therapy_graph = b.compile()
+
+
+class EngineTerapi:
+    """Mesin orkestrasi terapi adaptif Dr. Anna Reed."""
+
+    def __init__(self):
+        self.teknik_map = TEKNIK
+
+    def rekomendasi(self, teks_pengguna: str, keadaan: str = "default") -> dict:
+        t = teks_pengguna.lower()
+        if "panik" in t or "sesak" in t:
+            teknik = "dbt_tipp"
+        elif "gagal" in t or "bodoh" in t:
+            teknik = "cbt_thought_record"
+        elif "harus" in t or "wajib" in t:
+            teknik = "cbt_thought_record"
+        else:
+            teknik = pilih_teknik(keadaan)
+        return {"teknik": teknik, "cluster": self.teknik_map.get(teknik, "umum")}
+

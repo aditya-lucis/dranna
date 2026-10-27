@@ -9,6 +9,11 @@ LARANGAN_DUKA = [
     "paling tidak",
     "setidaknya dia tidak",
     "waktunya akan menyembuhkan",
+    "tahap tawar-menawar",
+    "tahap duka",
+    "tahap berduka",
+    "lupakan masa lalu",
+    "ikhlaskan saja",
 ]
 
 KORPUS_GRIEF = [

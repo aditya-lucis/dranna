@@ -18,6 +18,9 @@ def main() -> int:
     env = os.environ.copy()
     env["PYTHONPATH"] = ROOT_DIR
     env["IN_HARNESS_CHECK"] = "1"
+    env["OPENBLAS_NUM_THREADS"] = "1"
+    env["OMP_NUM_THREADS"] = "1"
+    env["MKL_NUM_THREADS"] = "1"
 
     for nama, cmd in GERBANG:
         r = subprocess.run(cmd, capture_output=True, text=True, env=env, cwd=ROOT_DIR)

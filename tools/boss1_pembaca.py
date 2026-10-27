@@ -5,8 +5,8 @@ from pathlib import Path
 import numpy as np
 
 # Tambahkan root workspace ke path
-ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT_DIR))
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, ROOT_DIR)
 
 from anna.src.pi.circumplex import pad
 from anna.src.pi.detektor import LEKSIKON_NEG, INTENS
