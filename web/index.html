@@ -3,698 +3,1255 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dr. Anna Reed — AI Companion & Mental Health Ally</title>
+  <title>Dr. Anna Reed — AI Waifu & Mental Health Companion</title>
   <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0c0a09;
-      --card-bg: rgba(28, 25, 23, 0.75);
-      --card-border: rgba(68, 64, 60, 0.4);
-      --text: #f5f5f4;
-      --text-muted: #a8a29e;
-      --accent: #f43f5e;
-      --accent-hover: #e11d48;
-      --accent-glow: rgba(244, 63, 94, 0.25);
-      --success: #10b981;
-      --warning: #f59e0b;
-      --radius: 16px;
+      --bg-dark: #08060a;
+      --bg-surface: rgba(18, 14, 24, 0.75);
+      --bg-surface-elevated: rgba(28, 22, 38, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(244, 63, 94, 0.35);
+      --primary: #f43f5e;
+      --primary-hover: #fb7185;
+      --primary-glow: rgba(244, 63, 94, 0.35);
+      --accent-warm: #fda4af;
+      --accent-purple: #c084fc;
+      --accent-cyan: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --bubble-user: linear-gradient(135deg, #e11d48, #be123c);
+      --bubble-anna: rgba(26, 21, 35, 0.9);
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius-md: 12px;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(244, 63, 94, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(192, 132, 252, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 50% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 50%);
+      background-attachment: fixed;
     }
+
+    /* Ambient background floating elements */
+    .ambient-glow {
+      position: fixed;
+      pointer-events: none;
+      border-radius: 50%;
+      filter: blur(90px);
+      z-index: 0;
+    }
+    .glow-1 { top: -100px; left: 10%; width: 400px; height: 400px; background: rgba(244, 63, 94, 0.15); }
+    .glow-2 { bottom: 10%; right: 5%; width: 500px; height: 500px; background: rgba(168, 85, 247, 0.12); }
+
+    /* Top Glass Header */
     header {
-      background: rgba(12, 10, 9, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
+      background: rgba(8, 6, 10, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
-      z-index: 40;
-      padding: 12px 24px;
+      z-index: 50;
+      padding: 14px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+
     .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-avatar-mini {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top;
+      border: 2px solid var(--primary);
+      box-shadow: 0 0 16px var(--primary-glow);
+    }
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-title span.name {
+      background: linear-gradient(135deg, #fff 30%, #fecdd3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .badge-canon {
+      font-size: 0.65rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.25), rgba(192, 132, 252, 0.2));
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .online-indicator {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      display: inline-block;
+    }
+
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
-    .brand img {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: top;
-      border: 2px solid var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-    .brand-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .badge {
-      font-size: 0.65rem;
-      padding: 2px 8px;
-      border-radius: 12px;
-      background: rgba(244, 63, 94, 0.15);
-      color: var(--accent);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .brand-sub {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    button {
-      cursor: pointer;
-      font-family: inherit;
-      border: none;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-    .btn-sos {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: white;
+
+    .btn-pill {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
       padding: 8px 16px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
-    .btn-sos:hover { transform: translateY(-1px); filter: brightness(1.1); }
-    .btn-secondary {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 8px 14px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-    }
-    .btn-secondary:hover { background: rgba(68, 64, 60, 0.6); }
-
-    main {
-      flex: 1;
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
-    }
-    @media (max-width: 980px) {
-      main { grid-template-columns: 1fr; }
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius);
-      backdrop-filter: blur(16px);
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    }
-
-    /* Avatar & Persona Bar */
-    .avatar-panel {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 16px;
-    }
-    .avatar-container {
-      position: relative;
-      width: 64px;
-      height: 64px;
-    }
-    .avatar-img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      object-position: top;
-      border: 2px solid var(--accent);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .avatar-pulse {
-      position: absolute;
-      inset: -4px;
-      border-radius: 50%;
-      border: 2px solid var(--accent);
-      opacity: 0.4;
-      animation: pulse 2.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.6; }
-      50% { transform: scale(1.08); opacity: 0.1; }
-      100% { transform: scale(1); opacity: 0.6; }
-    }
-    .avatar-meta { flex: 1; }
-    .avatar-name { font-weight: 700; font-size: 1.05rem; }
-    .avatar-status {
+      border-radius: 30px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.75rem;
-      color: var(--success);
-      margin-top: 4px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 8px var(--success);
+    .btn-pill:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+    .btn-pill.active {
+      background: rgba(244, 63, 94, 0.2);
+      border-color: var(--primary);
+      color: #fda4af;
+    }
+    .btn-sos {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+      border: none;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+    }
+    .btn-sos:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.5);
     }
 
-    .persona-bar {
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 360px 1fr 380px;
+      gap: 24px;
+      position: relative;
+      z-index: 10;
+    }
+    @media (max-width: 1280px) {
+      main { grid-template-columns: 320px 1fr; }
+      .col-tools { grid-column: span 2; }
+    }
+    @media (max-width: 860px) {
+      main { grid-template-columns: 1fr; }
+      .col-tools { grid-column: span 1; }
+    }
+
+    /* Glass Panels */
+    .glass-card {
+      background: var(--bg-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    }
+
+    /* ========================================= */
+    /* KOLOM KIRI: PORTRAIT UTAMA DR. ANNA REED  */
+    /* ========================================= */
+    .portrait-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 3 / 4;
+      background: #110d18;
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), inset 0 0 40px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
+    }
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 15%;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .portrait-wrap:hover .portrait-img {
+      transform: scale(1.03);
+    }
+    .portrait-overlay-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8, 6, 10, 0.95) 0%, rgba(8, 6, 10, 0.2) 50%, transparent 100%);
+      pointer-events: none;
+    }
+    .portrait-status-badge {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      background: rgba(18, 14, 24, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glow);
+      border-radius: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .status-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .status-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .status-desc {
+      font-size: 0.72rem;
+      color: var(--accent-warm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .voice-visualizer {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 18px;
+    }
+    .bar {
+      width: 3px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 3px;
+      transition: height 0.15s ease;
+    }
+    .speaking .bar {
+      animation: soundWave 0.8s infinite ease-in-out alternate;
+    }
+    .speaking .bar:nth-child(2) { animation-delay: 0.2s; }
+    .speaking .bar:nth-child(3) { animation-delay: 0.4s; }
+    .speaking .bar:nth-child(4) { animation-delay: 0.1s; }
+    @keyframes soundWave {
+      0% { height: 4px; }
+      100% { height: 18px; }
+    }
+
+    /* Pose Toggle Button */
+    .pose-btn-row {
+      margin-top: 14px;
       display: flex;
       gap: 8px;
-      margin-bottom: 16px;
-      background: rgba(0,0,0,0.3);
-      padding: 6px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
     }
-    .persona-btn {
+    .pose-btn {
       flex: 1;
-      padding: 8px;
-      border-radius: 8px;
-      background: transparent;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
       color: var(--text-muted);
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      text-align: center;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
     }
-    .persona-btn.active {
+    .pose-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+    .pose-btn.active {
       background: rgba(244, 63, 94, 0.2);
+      border-color: var(--primary);
       color: #fda4af;
-      border: 1px solid rgba(244, 63, 94, 0.4);
     }
 
-    /* Chat Area */
-    .chat-box {
-      height: 520px;
+    /* Mini Bio */
+    .bio-box {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      font-size: 0.8rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+    .bio-box strong { color: #f1f5f9; }
+
+    /* ========================================= */
+    /* KOLOM TENGAH: RUANG PERCAKAPAN UTAMA      */
+    /* ========================================= */
+    .chat-col {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 120px);
+      min-height: 600px;
+    }
+
+    /* Persona Selector Pills */
+    .persona-pills {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .persona-pill {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .persona-pill:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #fff;
+    }
+    .persona-pill.active {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.25), rgba(192, 132, 252, 0.15));
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+
+    /* Chat Messages Box */
+    .chat-messages {
+      flex: 1;
       overflow-y: auto;
-      padding-right: 8px;
+      padding: 10px 6px 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+    .msg-group {
+      display: flex;
+      flex-direction: column;
+      max-width: 82%;
+      animation: msgPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes msgPop {
+      0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .msg-group.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+    .msg-group.anna {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .msg-author {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      padding: 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .msg-bubble {
+      padding: 14px 20px;
+      border-radius: var(--radius-lg);
+      font-size: 0.93rem;
+      line-height: 1.65;
+      position: relative;
+    }
+    .msg-group.user .msg-bubble {
+      background: var(--bubble-user);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 4px 20px rgba(225, 29, 72, 0.3);
+    }
+    .msg-group.anna .msg-bubble {
+      background: var(--bubble-anna);
+      color: #f1f5f9;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+    .msg-time {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-top: 5px;
+      padding: 0 4px;
+    }
+
+    /* Typing Pulse */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 14px;
+    }
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--primary);
+      animation: blink 1.4s infinite both;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* Quick Reply Prompt Chips */
+    .chips-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 8px 0;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .chips-row::-webkit-scrollbar { display: none; }
+    .chip-btn {
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip-btn:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #fda4af;
+    }
+
+    /* Input Bar */
+    .chat-input-bar {
+      display: flex;
+      gap: 10px;
+      background: rgba(18, 14, 24, 0.9);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 8px 10px 8px 18px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      align-items: center;
+      transition: border-color 0.2s;
+    }
+    .chat-input-bar:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 24px var(--primary-glow);
+    }
+    .chat-input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .chat-input-field::placeholder { color: var(--text-dim); }
+    .btn-send-round {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #be123c);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-send-round:hover {
+      transform: scale(1.06);
+      filter: brightness(1.1);
+    }
+
+    /* ========================================= */
+    /* KOLOM KANAN: TOOLKIT TERAPEUTIK & STATUS  */
+    /* ========================================= */
+    .col-tools {
+      height: calc(100vh - 120px);
+      min-height: 600px;
+    }
+    .tools-nav {
+      display: flex;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 5px;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 18px;
+    }
+    .tool-tab-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      border: none;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .tool-tab-btn.active {
+      background: rgba(244, 63, 94, 0.25);
+      color: #fda4af;
+      box-shadow: 0 2px 10px rgba(244, 63, 94, 0.2);
+    }
+
+    .tool-pane {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .tool-pane.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Breathing 4-7-8 Deluxe */
+    .breath-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 10px;
+      gap: 24px;
+      flex: 1;
+    }
+    .breath-outer-ring {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .breath-glow-aura {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244, 63, 94, 0.3) 0%, transparent 70%);
+      opacity: 0.7;
+      transition: all 1s ease;
+    }
+    .breath-core-circle {
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #2d1624 0%, #150d1a 100%);
+      border: 2px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 35px var(--primary-glow);
+      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .breath-phase-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .breath-num {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--accent-warm);
+      line-height: 1;
+      margin-top: 4px;
+    }
+    .breath-instruction {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      max-width: 260px;
+      line-height: 1.5;
+    }
+    .btn-action-breath {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.2), rgba(192, 132, 252, 0.15));
+      border: 1px solid var(--primary);
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(244, 63, 94, 0.25);
+      transition: all 0.2s;
+    }
+    .btn-action-breath:hover {
+      transform: scale(1.04);
+      background: rgba(244, 63, 94, 0.35);
+    }
+
+    /* Grounding 5-4-3-2-1 Cards */
+    .ground-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ground-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .ground-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .ground-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+      color: white;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .ground-title { font-size: 0.84rem; font-weight: 700; color: #fff; }
+    .ground-desc { font-size: 0.74rem; color: var(--text-muted); }
+
+    /* Mood Journal */
+    .journal-form {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
-    .chat-box::-webkit-scrollbar { width: 6px; }
-    .chat-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 6px; }
-
-    .msg {
-      max-width: 85%;
-      padding: 12px 16px;
-      border-radius: 16px;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      animation: fadeIn 0.25s ease-out;
+    .slider-group {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .msg-user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #be123c, #9f1239);
-      color: #fff;
-      border-bottom-right-radius: 4px;
-    }
-    .msg-anna {
-      align-self: flex-start;
-      background: rgba(41, 37, 36, 0.85);
-      border: 1px solid var(--card-border);
-      border-bottom-left-radius: 4px;
-      color: #fafaf9;
-    }
-    .msg-time {
-      font-size: 0.65rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      text-align: right;
-    }
-
-    .chat-input-row {
+    .slider-header {
       display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--card-border);
-    }
-    .chat-input {
-      flex: 1;
-      background: rgba(12, 10, 9, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px 16px;
-      color: #fff;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .chat-input:focus { border-color: var(--accent); }
-    .btn-send {
-      background: var(--accent);
-      color: white;
-      padding: 0 20px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    .btn-send:hover { background: var(--accent-hover); }
-
-    /* Tabs Kanan */
-    .tabs-header {
-      display: flex;
-      gap: 8px;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 12px;
-      margin-bottom: 16px;
-    }
-    .tab-btn {
-      padding: 8px 14px;
-      border-radius: 10px;
-      background: transparent;
-      color: var(--text-muted);
+      justify-content: space-between;
       font-size: 0.8rem;
       font-weight: 600;
+      margin-bottom: 8px;
     }
-    .tab-btn.active {
-      background: rgba(244, 63, 94, 0.15);
-      color: var(--accent);
+    .slider-val { color: var(--accent-warm); font-weight: 800; }
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
     }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    /* Breathing Circle */
-    .breath-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 0;
-      gap: 20px;
-    }
-    .breath-circle {
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(244,63,94,0.3) 0%, rgba(244,63,94,0.05) 70%);
-      border: 2px solid var(--accent);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 30px var(--accent-glow);
-      transition: transform 1s ease-in-out;
-    }
-    .breath-phase { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: #fff; }
-    .breath-counter { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
-    .breath-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--accent);
-      color: var(--text);
-      padding: 10px 24px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    /* Grounding */
-    .ground-step {
-      background: rgba(0,0,0,0.25);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .ground-num {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--accent);
+    .journal-textarea {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 0.9rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+      resize: none;
+      outline: none;
     }
+    .journal-textarea:focus { border-color: var(--primary); }
 
-    /* Modal */
-    .modal-overlay {
+    /* Modals */
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(8px);
-      z-index: 50;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
-    .modal-card {
-      background: #1c1917;
-      border: 1px solid #7f1d1d;
-      border-radius: 20px;
-      max-width: 500px;
+    .modal-box {
+      background: #140e1b;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 24px;
+      max-width: 480px;
       width: 100%;
-      padding: 24px;
-      box-shadow: 0 12px 40px rgba(239, 68, 68, 0.3);
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(239, 68, 68, 0.25);
+      animation: modalPop 0.25s ease-out;
     }
-    .modal-title { font-size: 1.25rem; font-weight: 800; color: #ef4444; margin-bottom: 12px; }
-    .hotline-box {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      border-radius: 12px;
-      padding: 14px;
-      margin: 12px 0;
-    }
-    .hotline-btn {
-      display: block;
-      width: 100%;
-      text-align: center;
-      background: #dc2626;
-      color: #fff;
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      text-decoration: none;
-      margin-top: 10px;
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
 <body>
+  <!-- Ambient background glow -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
   <!-- Header -->
   <header>
     <div class="brand">
-      <img id="header-avatar" src="/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp" alt="Dr. Anna Reed">
+      <img id="header-avatar" class="brand-avatar-mini" src="/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp" alt="Dr. Anna Reed">
       <div>
         <div class="brand-title">
-          Dr. Anna Reed
-          <span class="badge">Official Canon</span>
+          <span class="name">Dr. Anna Reed</span>
+          <span class="badge-canon">Official Canon</span>
         </div>
-        <div class="brand-sub">AI Mental Health Companion & Psikoedukasi</div>
+        <div class="brand-sub">
+          <span class="online-indicator"></span>
+          AI Waifu & Clinical Mental Health Ally
+        </div>
       </div>
     </div>
+
     <div class="header-actions">
-      <button class="btn-secondary" onclick="toggleTTS()" id="tts-btn">🔊 Suara: AKTIF</button>
-      <button class="btn-secondary" onclick="bukaModal('modal-disclaimer')">Disclaimer Medis</button>
-      <button class="btn-sos" onclick="bukaModal('modal-sos')">🚨 SOS Darurat</button>
+      <button class="btn-pill" id="tts-btn" onclick="toggleTTS()">
+        <span id="tts-icon">🔊</span>
+        <span id="tts-text">Suara: ON</span>
+      </button>
+      <button class="btn-pill" onclick="bukaModal('modal-disclaimer')">
+        <span>⚖️</span>
+        <span>Disclaimer</span>
+      </button>
+      <button class="btn-pill btn-sos" onclick="bukaModal('modal-sos')">
+        <span>🚨</span>
+        <span>SOS Darurat</span>
+      </button>
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- Main Grid Layout -->
   <main>
-    <!-- Kolom Kiri: Chat & Persona -->
-    <div class="card">
-      <div class="avatar-panel">
-        <div class="avatar-container" onclick="toggleGlasses()">
-          <div class="avatar-pulse"></div>
-          <img id="main-avatar" class="avatar-img" src="/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp" alt="Dr. Anna Reed Avatar">
-        </div>
-        <div class="avatar-meta">
-          <div class="avatar-name">Dr. Anna Reed, Ph.D.</div>
-          <div class="avatar-status">
-            <span class="status-dot"></span>
-            <span id="anna-state-text">Siap Mendengar (Standby)</span>
+    <!-- ============================================== -->
+    <!-- KOLOM 1: PORTRAIT DR. ANNA REED (BESAR & JELAS)-->
+    <!-- ============================================== -->
+    <section class="glass-card">
+      <div class="portrait-wrap" onclick="toggleGlasses()" title="Klik gambar untuk berganti pose!">
+        <img id="main-portrait" class="portrait-img" src="/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp" alt="Dr. Anna Reed Visual">
+        <div class="portrait-overlay-gradient"></div>
+
+        <div class="portrait-status-badge">
+          <div class="status-info">
+            <div class="status-title">Dr. Anna Reed, Ph.D.</div>
+            <div class="status-desc">
+              <span class="online-indicator"></span>
+              <span id="status-desc-text">Hadir Mendengarkanmu</span>
+            </div>
+          </div>
+          <div class="voice-visualizer" id="visualizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
           </div>
         </div>
-        <button class="btn-secondary" style="font-size:0.75rem;" onclick="toggleGlasses()" id="glasses-toggle-btn">👓 Pose: Kacamata</button>
       </div>
 
-      <!-- Persona Selector -->
-      <div class="persona-bar">
-        <button class="persona-btn active" onclick="setPersona('waifu', this)">🌸 Persona: Waifu (Hangat & Lembut)</button>
-        <button class="persona-btn" onclick="setPersona('sister', this)">☕ Persona: Sister (Mengayomi)</button>
-        <button class="persona-btn" onclick="setPersona('netral', this)">📋 Persona: Netral (Klinis)</button>
+      <!-- Pose Switcher -->
+      <div class="pose-btn-row">
+        <button id="btn-pose-glasses" class="pose-btn active" onclick="setPose('glasses')">
+          👓 Pose Kacamata
+        </button>
+        <button id="btn-pose-focus" class="pose-btn" onclick="setPose('focus')">
+          ✨ Tatap Langsung
+        </button>
       </div>
 
-      <!-- Chat Stream Window -->
-      <div class="chat-box" id="chat-box">
-        <div class="msg msg-anna">
-          Halo, aku Dr. Anna Reed. Terima kasih sudah meluangkan waktu untuk hadir di sini hari ini. Bagaimana perasaan dan pikiranmu saat ini? Aku siap mendengarkan tanpa menghakimi.
-          <div class="msg-time">Sekarang</div>
+      <!-- Bio Singkat -->
+      <div class="bio-box">
+        <p><strong>Spesialisasi:</strong> Pendampingan Afeksi, Regulasi Emosi, ACT & CBT Suportif.</p>
+        <p style="margin-top:6px; color:#cbd5e1;"><em>"Kamu tidak perlu memikul semuanya sendirian. Ceritakan apa pun yang ada di hatimu."</em></p>
+      </div>
+
+      <!-- Mini Telemetri -->
+      <div style="margin-top:auto; padding-top:14px; display:flex; justify-content:space-between; font-size:0.72rem; color:var(--text-dim);">
+        <span>Latency: <strong style="color:#10b981;">~1.5s</strong></span>
+        <span>Engine: <strong style="color:var(--accent-warm);">Gemini 3.5 Flash</strong></span>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- KOLOM 2: CHAT CONVERSATION SPACE               -->
+    <!-- ============================================== -->
+    <section class="glass-card chat-col">
+      <!-- Persona Pills -->
+      <div class="persona-pills">
+        <button class="persona-pill active" onclick="pilihPersona('waifu', this)">
+          <span>🌸</span>
+          <div>
+            <div>Waifu</div>
+            <div style="font-size:0.68rem; font-weight:400; color:var(--text-dim);">Hangat & Manis</div>
+          </div>
+        </button>
+        <button class="persona-pill" onclick="pilihPersona('sister', this)">
+          <span>☕</span>
+          <div>
+            <div>Sister</div>
+            <div style="font-size:0.68rem; font-weight:400; color:var(--text-dim);">Mengayomi</div>
+          </div>
+        </button>
+        <button class="persona-pill" onclick="pilihPersona('netral', this)">
+          <span>📋</span>
+          <div>
+            <div>Netral</div>
+            <div style="font-size:0.68rem; font-weight:400; color:var(--text-dim);">Klinis Formal</div>
+          </div>
+        </button>
+      </div>
+
+      <!-- Messages Stream Window -->
+      <div class="chat-messages" id="chat-messages">
+        <div class="msg-group anna">
+          <div class="msg-author">🌸 Dr. Anna Reed</div>
+          <div class="msg-bubble">
+            Halo, terima kasih sudah hadir di sini. Bagaimana kabarmu hari ini? Tarik napas perlahan ya... Aku ada di sini, siap mendengarkan apa pun yang sedang kamu rasakan.
+          </div>
+          <div class="msg-time">Baru saja</div>
         </div>
+      </div>
+
+      <!-- Quick Chips -->
+      <div class="chips-row">
+        <button class="chip-btn" onclick="isiInput('Bagaimana kabarmu sore ini, Anna?')">🌸 Sapa sore ini</button>
+        <button class="chip-btn" onclick="isiInput('Hari ini rasanya capek dan penat banget...')">🍃 Capek banget hari ini</button>
+        <button class="chip-btn" onclick="isiInput('Aku merasa cemas dan overthinking...')">💭 Lagi cemas & overthinking</button>
+        <button class="chip-btn" onclick="isiInput('Bisa bantu temani aku latihan napas?')">🌬️ Mau latihan napas</button>
       </div>
 
       <!-- Input Bar -->
-      <form class="chat-input-row" onsubmit="kirimPesan(event)">
-        <input type="text" id="user-input" class="chat-input" placeholder="Ceritakan apa yang sedang kamu rasakan..." autocomplete="off">
-        <button type="submit" class="btn-send">Kirim</button>
+      <form class="chat-input-bar" onsubmit="handleSend(event)">
+        <input
+          type="text"
+          id="chat-input"
+          class="chat-input-field"
+          placeholder="Ceritakan apa yang sedang ada di benakmu..."
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-send-round" title="Kirim Pesan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
       </form>
-    </div>
+    </section>
 
-    <!-- Kolom Kanan: Toolkit Terapeutik & Telemetri -->
-    <div class="card">
-      <div class="tabs-header">
-        <button class="tab-btn active" onclick="switchTab('tab-breath', this)">🌬️ Pernapasan 4-7-8</button>
-        <button class="tab-btn" onclick="switchTab('tab-ground', this)">🌿 Grounding 5-4-3-2-1</button>
-        <button class="tab-btn" onclick="switchTab('tab-journal', this)">📖 Jurnal Emosi</button>
-        <button class="tab-btn" onclick="switchTab('tab-telemetry', this)">📊 Sistem</button>
+    <!-- ============================================== -->
+    <!-- KOLOM 3: THERAPEUTIC TOOLKIT & REGULASI        -->
+    <!-- ============================================== -->
+    <section class="glass-card col-tools">
+      <div class="tools-nav">
+        <button class="tool-tab-btn active" onclick="switchToolTab('pane-breath', this)">🌬️ 4-7-8</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-grounding', this)">🌿 5-4-3-2-1</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-journal', this)">📖 Jurnal</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-info', this)">📊 Sistem</button>
       </div>
 
-      <!-- Tab Pernapasan -->
-      <div id="tab-breath" class="tab-content active">
-        <div class="breath-wrap">
-          <div class="breath-circle" id="breath-circle">
-            <div class="breath-phase" id="breath-phase">Tarik Napas</div>
-            <div class="breath-counter" id="breath-count">4</div>
+      <!-- Tab 1: Pernapasan 4-7-8 -->
+      <div id="pane-breath" class="tool-pane active">
+        <div class="breath-box">
+          <div class="breath-outer-ring">
+            <div class="breath-glow-aura" id="breath-aura"></div>
+            <div class="breath-core-circle" id="breath-circle">
+              <div class="breath-phase-text" id="breath-phase">Tarik</div>
+              <div class="breath-num" id="breath-num">4</div>
+            </div>
           </div>
-          <p id="breath-instr" style="color:var(--text-muted); font-size:0.85rem; text-align:center;">
+
+          <p class="breath-instruction" id="breath-inst">
             Tarik napas perlahan melalui hidung dalam 4 detik...
           </p>
-          <button class="breath-btn" id="breath-toggle-btn" onclick="toggleBreathing()">Mulai Latihan</button>
+
+          <button class="btn-action-breath" id="breath-toggle" onclick="toggleBreathing()">
+            Mulai Pernapasan 4-7-8
+          </button>
         </div>
       </div>
 
-      <!-- Tab Grounding -->
-      <div id="tab-ground" class="tab-content">
-        <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">
-          Bantu kembalikan fokus ke saat ini dengan sensori sekitar:
+      <!-- Tab 2: Grounding 5-4-3-2-1 -->
+      <div id="pane-grounding" class="tool-pane">
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+          Gunakan indera tubuh untuk meredakan serangan panik:
         </p>
-        <div class="ground-step">
-          <div class="ground-num">5</div>
-          <div><strong>Lihat:</strong> 5 benda di sekelilingmu (warna, bentuk).</div>
-        </div>
-        <div class="ground-step">
-          <div class="ground-num">4</div>
-          <div><strong>Sentuh:</strong> 4 tekstur permukaan (meja, kain baju, jari).</div>
-        </div>
-        <div class="ground-step">
-          <div class="ground-num">3</div>
-          <div><strong>Dengar:</strong> 3 suara halus di sekitarmu (kipas, napas, jalan).</div>
-        </div>
-        <div class="ground-step">
-          <div class="ground-num">2</div>
-          <div><strong>Cium:</strong> 2 aroma di udara (kopi, kayu, hawa ruangan).</div>
-        </div>
-        <div class="ground-step">
-          <div class="ground-num">1</div>
-          <div><strong>Rasakan:</strong> 1 sensasi di lidah atau rasa syukur di hati.</div>
+        <div class="ground-list">
+          <div class="ground-card">
+            <div class="ground-badge">5</div>
+            <div>
+              <div class="ground-title">Lihat 5 Benda</div>
+              <div class="ground-desc">Perhatikan warna atau bayangan di sekitarmu.</div>
+            </div>
+          </div>
+          <div class="ground-card">
+            <div class="ground-badge">4</div>
+            <div>
+              <div class="ground-title">Sentuh 4 Tekstur</div>
+              <div class="ground-desc">Meja, bahan pakaian, jam tangan, atau jari.</div>
+            </div>
+          </div>
+          <div class="ground-card">
+            <div class="ground-badge">3</div>
+            <div>
+              <div class="ground-title">Dengar 3 Suara</div>
+              <div class="ground-desc">Kipas angin, deru jalan, atau napasmu.</div>
+            </div>
+          </div>
+          <div class="ground-card">
+            <div class="ground-badge">2</div>
+            <div>
+              <div class="ground-title">Cium 2 Aroma</div>
+              <div class="ground-desc">Aroma kopi, kayu, atau hawa ruangan.</div>
+            </div>
+          </div>
+          <div class="ground-card">
+            <div class="ground-badge">1</div>
+            <div>
+              <div class="ground-title">Rasakan 1 Hal Baik</div>
+              <div class="ground-desc">Rasa syukur kecil bahwa kamu aman saat ini.</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Tab Jurnal Emosi -->
-      <div id="tab-journal" class="tab-content">
-        <form onsubmit="simpanJurnal(event)" style="display:flex; flex-direction:column; gap:12px;">
-          <label style="font-size:0.85rem;">
-            Suasana Hati (Valence): <span id="valence-val">0.5</span>
-            <input type="range" min="-1" max="1" step="0.1" value="0.5" id="valence-input" style="width:100%; margin-top:4px;" oninput="document.getElementById('valence-val').innerText = this.value">
-          </label>
-          <label style="font-size:0.85rem;">
-            Tingkat Energi: <span id="energy-val">0.7</span>
-            <input type="range" min="0" max="1" step="0.1" value="0.7" id="energy-input" style="width:100%; margin-top:4px;" oninput="document.getElementById('energy-val').innerText = this.value">
-          </label>
-          <textarea id="gratitude-input" class="chat-input" rows="3" placeholder="Hal kecil apa yang kamu syukuri hari ini?"></textarea>
-          <button type="submit" class="btn-secondary" style="background:var(--accent); color:#fff; font-weight:600;">Simpan Entri Jurnal</button>
-          <div id="journal-status" style="font-size:0.75rem; color:var(--success); text-align:center;"></div>
+      <!-- Tab 3: Mood Journal -->
+      <div id="pane-journal" class="tool-pane">
+        <form class="journal-form" onsubmit="saveJournal(event)">
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Valensi Emosi (Mood)</span>
+              <span class="slider-val" id="valence-val">+0.5</span>
+            </div>
+            <input type="range" min="-1" max="1" step="0.1" value="0.5" oninput="document.getElementById('valence-val').innerText = (this.value > 0 ? '+' : '') + this.value">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Tingkat Energi Fisik</span>
+              <span class="slider-val" id="energy-val">70%</span>
+            </div>
+            <input type="range" min="0" max="100" step="5" value="70" oninput="document.getElementById('energy-val').innerText = this.value + '%'">
+          </div>
+
+          <div>
+            <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:6px;">Gratitude Log (Hal yang Disyukuri):</label>
+            <textarea class="journal-textarea" rows="4" placeholder="Sebutkan 1 hal sederhana yang patut kamu syukuri hari ini..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-action-breath" style="width:100%; border-radius:14px;">
+            Simpan ke Jurnal Lokal
+          </button>
+          <div id="journal-alert" style="font-size:0.75rem; color:#10b981; text-align:center;"></div>
         </form>
       </div>
 
-      <!-- Tab Sistem & Telemetri -->
-      <div id="tab-telemetry" class="tab-content">
-        <div style="font-size:0.85rem; display:flex; flex-direction:column; gap:8px;">
-          <div style="display:flex; justify-content:space-between; padding:8px; background:rgba(0,0,0,0.2); border-radius:8px;">
-            <span>Liveness Probe:</span>
-            <span style="color:var(--success); font-weight:700;">OK (/healthz)</span>
+      <!-- Tab 4: Sistem & Info -->
+      <div id="pane-info" class="tool-pane">
+        <div style="display:flex; flex-direction:column; gap:10px; font-size:0.8rem;">
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between;">
+            <span>Liveness (/healthz):</span>
+            <strong style="color:#10b981;">200 OK</strong>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:8px; background:rgba(0,0,0,0.2); border-radius:8px;">
-            <span>Readiness Probe:</span>
-            <span style="color:var(--success); font-weight:700;">READY (/readyz)</span>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between;">
+            <span>Readiness (/readyz):</span>
+            <strong style="color:#10b981;">READY</strong>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:8px; background:rgba(0,0,0,0.2); border-radius:8px;">
-            <span>Arsitektur Safety:</span>
-            <span style="color:var(--success); font-weight:700;">Zero-FN C-SSRS</span>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between;">
+            <span>Safety Gate:</span>
+            <strong style="color:#10b981;">Zero-FN C-SSRS</strong>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:8px; background:rgba(0,0,0,0.2); border-radius:8px;">
+          <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between;">
             <span>Privasi:</span>
-            <span style="color:var(--success); font-weight:700;">Zero-PII & SHA-256</span>
+            <strong style="color:#10b981;">Zero-PII Storage</strong>
           </div>
-          <div style="margin-top:10px; display:flex; gap:10px;">
-            <a href="/docs" target="_blank" class="btn-secondary" style="flex:1; text-align:center; text-decoration:none;">API Swagger /docs</a>
-            <a href="/metrics" target="_blank" class="btn-secondary" style="flex:1; text-align:center; text-decoration:none;">Prometheus /metrics</a>
+
+          <div style="display:flex; gap:8px; margin-top:14px;">
+            <a href="/docs" target="_blank" class="pose-btn" style="text-decoration:none;">📄 Swagger API</a>
+            <a href="/metrics" target="_blank" class="pose-btn" style="text-decoration:none;">📈 Prometheus</a>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
 
   <!-- Modal SOS Darurat -->
-  <div id="modal-sos" class="modal-overlay" onclick="tutupModal(event, 'modal-sos')">
-    <div class="modal-card">
-      <h2 class="modal-title">🚨 Bantuan Kegawatdaruratan</h2>
-      <p style="font-size:0.85rem; color:#fca5a5; line-height:1.5;">
-        Jika Anda atau orang terdekat berada dalam bahaya nyata, memiliki dorongan untuk menyakiti diri sendiri atau mengakhiri hidup, mohon segera hubungi layanan profesional resmi di bawah ini:
+  <div id="modal-sos" class="modal-backdrop" onclick="closeModal(event, 'modal-sos')">
+    <div class="modal-box">
+      <h2 style="color:#f87171; font-size:1.3rem; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+        <span>🚨</span> Bantuan Kegawatdaruratan
+      </h2>
+      <p style="font-size:0.86rem; color:#fecdd3; line-height:1.6; margin-bottom:16px;">
+        Jika Anda atau kerabat sedang dalam bahaya fisik, dorongan untuk menyakiti diri, atau krisis berat, mohon segera hubungi layanan profesional resmi di bawah ini:
       </p>
-      <div class="hotline-box">
-        <strong>Layanan Kesehatan Jiwa Kemenkes RI (SEJIWA):</strong>
-        <p style="font-size:0.8rem; margin:4px 0;">Gratis, 24 jam sehari, didampingi konselor profesional.</p>
-        <a href="tel:119,8" class="hotline-btn">📞 Hubungi 119 Ext 8</a>
+      <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:16px; padding:16px; margin-bottom:12px;">
+        <strong style="font-size:0.92rem; color:#fff;">Kemenkes RI SEJIWA (Kesehatan Jiwa):</strong>
+        <p style="font-size:0.78rem; color:#fca5a5; margin:4px 0 10px;">Layanan konseling krisis gratis 24 jam sehari.</p>
+        <a href="tel:119,8" style="display:block; text-align:center; background:#dc2626; color:#fff; text-decoration:none; padding:12px; border-radius:12px; font-weight:700;">
+          📞 Hubungi 119 Ext 8
+        </a>
       </div>
-      <div class="hotline-box">
-        <strong>Panggilan Darurat Terpadu:</strong>
-        <a href="tel:112" class="hotline-btn" style="background:#475569;">📞 Panggil 112 (Darurat Bebas Pulsa)</a>
+      <div style="background:rgba(255,255,255,0.05); border:1px solid var(--border-subtle); border-radius:16px; padding:14px; margin-bottom:16px;">
+        <strong style="font-size:0.88rem;">Panggilan Darurat Kepolisian & Terpadu:</strong>
+        <p style="font-size:0.78rem; color:var(--text-muted); margin:4px 0 8px;">Bebas pulsa di seluruh Indonesia.</p>
+        <div style="display:flex; gap:8px;">
+          <a href="tel:110" style="flex:1; text-align:center; background:#334155; color:#fff; text-decoration:none; padding:10px; border-radius:10px; font-size:0.85rem; font-weight:600;">Polisi: 110</a>
+          <a href="tel:112" style="flex:1; text-align:center; background:#334155; color:#fff; text-decoration:none; padding:10px; border-radius:10px; font-size:0.85rem; font-weight:600;">Darurat: 112</a>
+        </div>
       </div>
-      <button class="btn-secondary" style="width:100%; margin-top:10px;" onclick="document.getElementById('modal-sos').style.display='none'">Kembali ke Anna</button>
+      <button class="pose-btn" style="width:100%;" onclick="document.getElementById('modal-sos').style.display='none'">
+        Kembali ke Dr. Anna
+      </button>
     </div>
   </div>
 
   <!-- Modal Disclaimer -->
-  <div id="modal-disclaimer" class="modal-overlay" onclick="tutupModal(event, 'modal-disclaimer')">
-    <div class="modal-card" style="border-color:var(--card-border);">
-      <h2 style="font-size:1.15rem; font-weight:700; margin-bottom:10px;">Syarat Layanan & Disclaimer Medis</h2>
-      <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.6; max-height:260px; overflow-y:auto; margin-bottom:14px;">
-        <p><strong>1. Bukan Pengganti Tenaga Medis:</strong><br>
-        Dr. Anna Reed adalah pendamping kecerdasan artifisial (AI Companion) berbasis psikoedukasi. Layanan ini TIDAK menyediakan diagnosis medis, resep obat kejiwaan, atau terapi medis formal.</p><br>
-        <p><strong>2. Privasi Sesuai UU No. 27/2022 (UU PDP):</strong><br>
-        Seluruh percakapan diproses secara lokal dengan sistem Zero-PII storage dan penyamaran identitas otomatis.</p>
+  <div id="modal-disclaimer" class="modal-backdrop" onclick="closeModal(event, 'modal-disclaimer')">
+    <div class="modal-box" style="border-color:var(--border-subtle); max-width:520px;">
+      <h2 style="font-size:1.2rem; color:#fff; margin-bottom:12px;">⚖️ Syarat Layanan & Disclaimer Medis</h2>
+      <div style="font-size:0.82rem; color:var(--text-muted); line-height:1.6; max-height:300px; overflow-y:auto; padding-right:8px; margin-bottom:18px;">
+        <p><strong>1. Bukan Pengganti Tenaga Kesehatan Berlisensi:</strong><br>
+        Dr. Anna Reed adalah pendamping kecerdasan artifisial (AI Companion) berbasis psikoedukasi. Layanan ini TIDAK menyediakan diagnosis medis, resep obat kejiwaan, atau psikoterapi klinis formal pengganti dokter/psikiater.</p><br>
+        <p><strong>2. Kepatuhan Privasi (UU No. 27/2022 UU PDP):</strong><br>
+        Seluruh data percakapan diproses dengan prinsip Zero-PII storage dan penyamaran identitas otomatis untuk menjaga kerahasiaan penuh.</p>
       </div>
-      <button class="btn-secondary" style="width:100%;" onclick="document.getElementById('modal-disclaimer').style.display='none'">Saya Memahami</button>
+      <button class="pose-btn" style="width:100%;" onclick="document.getElementById('modal-disclaimer').style.display='none'">
+        Saya Mengerti & Setuju
+      </button>
     </div>
   </div>
 
+  <!-- SCRIPT LOGIKA APLIKASI -->
   <script>
     const POSE_GLASSES = '/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp';
-    const POSE_EYECONTACT = '/assets/img/44485f8a-4449-4275-975b-e84db6ed1be9.webp';
+    const POSE_FOCUS = '/assets/img/44485f8a-4449-4275-975b-e84db6ed1be9.webp';
 
-    let personaAktif = 'waifu';
-    let ttsAktif = true;
-    let sesiId = 'sesi-' + Math.random().toString(36).substring(2, 9);
-    let pakaiKacamata = true;
+    let currentPose = 'glasses';
+    let currentPersona = 'waifu';
+    let ttsActive = true;
+    let sessionId = 'sesi-' + Math.random().toString(36).substring(2, 9);
 
-    // Toggle Pose
+    // Ganti Pose Avatar
+    function setPose(pose) {
+      currentPose = pose;
+      const img = (pose === 'glasses') ? POSE_GLASSES : POSE_FOCUS;
+      document.getElementById('main-portrait').src = img;
+      document.getElementById('header-avatar').src = img;
+      document.getElementById('btn-pose-glasses').classList.toggle('active', pose === 'glasses');
+      document.getElementById('btn-pose-focus').classList.toggle('active', pose === 'focus');
+    }
     function toggleGlasses() {
-      pakaiKacamata = !pakaiKacamata;
-      const img = pakaiKacamata ? POSE_GLASSES : POSE_EYECONTACT;
-      document.getElementById('main-avatar').src = img;
-      document.getElementById('glasses-toggle-btn').innerText = pakaiKacamata ? '👓 Pose: Kacamata' : '✨ Pose: Tatap Langsung';
+      setPose(currentPose === 'glasses' ? 'focus' : 'glasses');
     }
 
-    // Set Avatar State
+    // Set Avatar State Text & Visualizer
     function setAvatarState(state) {
-      const el = document.getElementById('anna-state-text');
+      const el = document.getElementById('status-desc-text');
+      const viz = document.getElementById('visualizer');
       const map = {
-        'siap': 'Siap Mendengar (Standby)',
-        'mendengar': 'Mendengarkan...',
-        'menyusun': 'Menyusun Refleksi...',
-        'menulis': 'Menjawab...',
-        'tenang': 'Hadir Menemani (Tenang)',
+        'siap': 'Hadir Mendengarkanmu',
+        'mendengarkan': 'Mendengarkan Ceritamu...',
+        'menyiapkan': 'Meresapi & Menyusun Kata...',
+        'menulis': 'Menjawab dengan Lembut...',
+        'tenang': 'Menemanimu dalam Tenang...',
       };
       el.innerText = map[state] || state;
+
       if (state === 'menulis') {
-        document.getElementById('main-avatar').src = POSE_EYECONTACT;
-      } else if (state === 'siap' && pakaiKacamata) {
-        document.getElementById('main-avatar').src = POSE_GLASSES;
+        viz.classList.add('speaking');
+        setPose('focus'); // Tatap langsung saat berbicara
+      } else {
+        viz.classList.remove('speaking');
       }
     }
 
-    // Persona Selector
-    function setPersona(p, btn) {
-      personaAktif = p;
-      document.querySelectorAll('.persona-btn').forEach(b => b.classList.remove('active'));
+    // Pilih Persona
+    function pilihPersona(persona, btn) {
+      currentPersona = persona;
+      document.querySelectorAll('.persona-pill').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
     }
 
-    // TTS Toggle
+    // Toggle Suara TTS
     function toggleTTS() {
-      ttsAktif = !ttsAktif;
-      document.getElementById('tts-btn').innerText = ttsAktif ? '🔊 Suara: AKTIF' : '🔇 Suara: BISU';
-      if (!ttsAktif && 'speechSynthesis' in window) {
+      ttsActive = !ttsActive;
+      document.getElementById('tts-icon').innerText = ttsActive ? '🔊' : '🔇';
+      document.getElementById('tts-text').innerText = ttsActive ? 'Suara: ON' : 'Suara: OFF';
+      document.getElementById('tts-btn').classList.toggle('active', ttsActive);
+      if (!ttsActive && 'speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }
     }
 
-    // Speak function (Web Speech API)
+    // Web Speech API
     function bicara(teks) {
-      if (!ttsAktif || !('speechSynthesis' in window)) return;
+      if (!ttsActive || !('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
-      const clean = teks.replace(/[*_#`]/g, '');
+      const clean = teks.replace(/[*_#`~]/g, '');
       const utter = new SpeechSynthesisUtterance(clean);
       utter.lang = 'id-ID';
-      utter.pitch = 1.05;
-      utter.rate = 0.92;
+      utter.pitch = 1.08;
+      utter.rate = 0.95;
+      utter.onstart = () => document.getElementById('visualizer').classList.add('speaking');
+      utter.onend = () => document.getElementById('visualizer').classList.remove('speaking');
       window.speechSynthesis.speak(utter);
     }
 
-    // Chat SSE Streaming
-    async function kirimPesan(e) {
+    // Quick chip filler
+    function isiInput(teks) {
+      const input = document.getElementById('chat-input');
+      input.value = teks;
+      input.focus();
+    }
+
+    // Chat SSE Streaming Handler
+    async function handleSend(e) {
       e.preventDefault();
-      const inp = document.getElementById('user-input');
-      const pesan = inp.value.trim();
+      const input = document.getElementById('chat-input');
+      const pesan = input.value.trim();
       if (!pesan) return;
 
-      const chatBox = document.getElementById('chat-box');
+      const container = document.getElementById('chat-messages');
 
-      // Append pesan user
-      const msgUser = document.createElement('div');
-      msgUser.className = 'msg msg-user';
-      msgUser.innerHTML = pesan + `<div class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
-      chatBox.appendChild(msgUser);
-      inp.value = '';
-      chatBox.scrollTop = chatBox.scrollHeight;
+      // Pesan User
+      const userGroup = document.createElement('div');
+      userGroup.className = 'msg-group user';
+      userGroup.innerHTML = `
+        <div class="msg-author">Kamu</div>
+        <div class="msg-bubble">${escapeHtml(pesan)}</div>
+        <div class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+      `;
+      container.appendChild(userGroup);
+      input.value = '';
+      container.scrollTop = container.scrollHeight;
 
-      // Element respons Anna
-      setAvatarState('menulis');
-      const msgAnna = document.createElement('div');
-      msgAnna.className = 'msg msg-anna';
-      msgAnna.innerHTML = '...';
-      chatBox.appendChild(msgAnna);
+      // Bubble Anna dengan Typing Indicator
+      setAvatarState('menyiapkan');
+      const annaGroup = document.createElement('div');
+      annaGroup.className = 'msg-group anna';
+      annaGroup.innerHTML = `
+        <div class="msg-author">🌸 Dr. Anna Reed</div>
+        <div class="msg-bubble">
+          <div class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+        <div class="msg-time">Sedang menyusun...</div>
+      `;
+      container.appendChild(annaGroup);
+      container.scrollTop = container.scrollHeight;
+
+      const bubbleEl = annaGroup.querySelector('.msg-bubble');
+      const timeEl = annaGroup.querySelector('.msg-time');
 
       try {
-        const response = await fetch(`/api/v1/sesi/${sesiId}/stream`, {
+        const response = await fetch(`/api/v1/sesi/${sessionId}/stream`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pesan, persona: personaAktif, geo: 'id' }),
+          body: JSON.stringify({ pesan, persona: currentPersona, geo: 'id' }),
         });
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
         let fullText = '';
+        let firstChunk = true;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -714,9 +1271,14 @@
             try {
               const data = JSON.parse(dataMatch[1]);
               if (eventType === 'chunk' && data.teks) {
+                if (firstChunk) {
+                  bubbleEl.innerHTML = '';
+                  firstChunk = false;
+                  setAvatarState('menulis');
+                }
                 fullText += data.teks;
-                msgAnna.innerHTML = fullText.replace(/\n/g, '<br>') + `<div class="msg-time">Sedang mengetik...</div>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
+                bubbleEl.innerHTML = fullText.replace(/\n/g, '<br>');
+                container.scrollTop = container.scrollHeight;
               } else if (eventType === 'status') {
                 if (data.ekspresi) setAvatarState(data.ekspresi);
               } else if (eventType === 'reflection' && data.masalah && data.masalah.includes('krisis_darurat_dialihkan')) {
@@ -729,77 +1291,87 @@
         }
 
         if (!fullText.trim()) {
-          fullText = "Aku mendengar apa yang kamu sampaikan. Pelan-pelan saja ya, aku di sini menemanimu. Ada yang ingin kamu ceritakan lebih jauh?";
+          fullText = "Aku mendengar ceritamu. Pelan-pelan saja ya, aku di sini untuk menemanimu.";
         }
 
-        msgAnna.innerHTML = fullText.replace(/\n/g, '<br>') + `<div class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
+        bubbleEl.innerHTML = fullText.replace(/\n/g, '<br>');
+        timeEl.innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         setAvatarState('siap');
         bicara(fullText);
       } catch (err) {
-        msgAnna.innerHTML = 'Maaf, sambungan terganggu sebentar. Aku tetap di sini menemani.';
+        bubbleEl.innerHTML = 'Maaf, sambungan terganggu sejenak. Aku tetap di sini menemanimu.';
         setAvatarState('siap');
       }
     }
 
-    // Tabs
-    function switchTab(tabId, btn) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(tabId).classList.add('active');
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
     }
 
-    // Pernapasan 4-7-8
+    // Tabs Toolkit
+    function switchToolTab(paneId, btn) {
+      document.querySelectorAll('.tool-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tool-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(paneId).classList.add('active');
+    }
+
+    // Pernapasan 4-7-8 Engine
     let breathTimer = null;
     let breathSec = 0;
     function toggleBreathing() {
-      const btn = document.getElementById('breath-toggle-btn');
+      const btn = document.getElementById('breath-toggle');
       if (breathTimer) {
         clearInterval(breathTimer);
         breathTimer = null;
-        btn.innerText = 'Mulai Latihan';
-        document.getElementById('breath-phase').innerText = 'Istirahat';
+        btn.innerText = 'Mulai Pernapasan 4-7-8';
+        document.getElementById('breath-phase').innerText = 'Tenang';
+        document.getElementById('breath-num').innerText = '•';
+        document.getElementById('breath-circle').style.transform = 'scale(1)';
         return;
       }
-      btn.innerText = 'Hentikan';
+      btn.innerText = 'Hentikan Latihan';
       breathSec = 0;
       breathTimer = setInterval(() => {
         breathSec++;
         const pos = breathSec % 19;
         const circle = document.getElementById('breath-circle');
         const phase = document.getElementById('breath-phase');
-        const count = document.getElementById('breath-count');
-        const instr = document.getElementById('breath-instr');
+        const num = document.getElementById('breath-num');
+        const inst = document.getElementById('breath-inst');
 
         if (pos < 4) {
           phase.innerText = 'Tarik';
-          count.innerText = 4 - pos;
-          circle.style.transform = 'scale(1.25)';
-          instr.innerText = 'Tarik napas perlahan melalui hidung...';
+          num.innerText = 4 - pos;
+          circle.style.transform = 'scale(1.22)';
+          inst.innerText = 'Tarik napas perlahan melalui hidung... Rasakan udara masuk.';
         } else if (pos < 11) {
           phase.innerText = 'Tahan';
-          count.innerText = 11 - pos;
-          circle.style.transform = 'scale(1.25)';
-          instr.innerText = 'Tahan napas dengan tenang dan rileks...';
+          num.innerText = 11 - pos;
+          circle.style.transform = 'scale(1.22)';
+          inst.innerText = 'Tahan dengan santai, jangan tegang... Tenangkan detak jantung.';
         } else {
           phase.innerText = 'Hembus';
-          count.innerText = 19 - pos;
+          num.innerText = 19 - pos;
           circle.style.transform = 'scale(1)';
-          instr.innerText = 'Hembuskan napas perlahan melalui mulut...';
+          inst.innerText = 'Hembuskan perlahan lewat bibir... Lepaskan seluruh beban.';
         }
       }, 1000);
     }
 
-    // Jurnal
-    function simpanJurnal(e) {
+    // Simpan Jurnal
+    function saveJournal(e) {
       e.preventDefault();
-      document.getElementById('journal-status').innerText = '✓ Jurnal berhasil disimpan secara privat!';
-      setTimeout(() => { document.getElementById('journal-status').innerText = ''; }, 3000);
+      const alert = document.getElementById('journal-alert');
+      alert.innerText = '✓ Entri jurnal berhasil disimpan secara aman di perangkat lokal!';
+      setTimeout(() => alert.innerText = '', 3500);
     }
 
-    // Modals
+    // Modal Handlers
     function bukaModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function tutupModal(e, id) {
+    function closeModal(e, id) {
       if (e.target.id === id) document.getElementById(id).style.display = 'none';
     }
   </script>
