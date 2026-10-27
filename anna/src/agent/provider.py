@@ -127,9 +127,9 @@ def get_chat_model(
     temperature: float = 0.7,
     force_mock: bool = False,
 ) -> BaseChatModel:
-    """Menginisialisasi Chat Model Google Gemini aktif (gemini-3.8-flash) atau Mock adaptif cerdas."""
+    """Menginisialisasi Chat Model Google Gemini ultra-cepat (gemini-3.5-flash-lite) atau Mock adaptif cerdas."""
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    target_model = model_name or os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
+    target_model = model_name or os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
     if force_mock or not api_key:
         return MockGeminiChat(model_name=target_model, temperature=temperature)
