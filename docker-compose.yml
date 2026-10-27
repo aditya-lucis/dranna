@@ -15,6 +15,10 @@ services:
       - MKL_NUM_THREADS=1
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+    volumes:
+      - ./web:/app/web
+      - ./anna:/app/anna
+      - ./assets:/app/assets
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
