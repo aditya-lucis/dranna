@@ -701,29 +701,37 @@
           if (done) break;
           buffer += decoder.decode(value, { stream: true });
 
-          const lines = buffer.split('\n');
-          buffer = lines.pop();
+          const chunks = buffer.split('\n\n');
+          buffer = chunks.pop();
 
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const dataStr = line.replace('data: ', '').trim();
-              if (dataStr) {
-                try {
-                  const ev = JSON.parse(dataStr);
-                  if (ev.tipe === 'token' && ev.konten) {
-                    fullText += ev.konten;
-                    msgAnna.innerHTML = fullText.replace(/\n/g, '<br>') + `<div class="msg-time">Sedang mengetik...</div>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                  } else if (ev.tipe === 'status') {
-                    setAvatarState(ev.konten);
-                  } else if (ev.tipe === 'krisis') {
-                    bukaModal('modal-sos');
-                  }
-                } catch(err) {}
+          for (const chunk of chunks) {
+            if (!chunk.trim()) continue;
+            const eventMatch = chunk.match(/event:\s*(\w+)/);
+            const dataMatch = chunk.match(/data:\s*(.+)/);
+            if (!dataMatch) continue;
+
+            const eventType = eventMatch ? eventMatch[1] : 'message';
+            try {
+              const data = JSON.parse(dataMatch[1]);
+              if (eventType === 'chunk' && data.teks) {
+                fullText += data.teks;
+                msgAnna.innerHTML = fullText.replace(/\n/g, '<br>') + `<div class="msg-time">Sedang mengetik...</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+              } else if (eventType === 'status') {
+                if (data.ekspresi) setAvatarState(data.ekspresi);
+              } else if (eventType === 'reflection' && data.masalah && data.masalah.includes('krisis_darurat_dialihkan')) {
+                bukaModal('modal-sos');
+              } else if (eventType === 'selesai' && data.respons_final) {
+                if (!fullText) fullText = data.respons_final;
               }
-            }
+            } catch(err) {}
           }
         }
+
+        if (!fullText.trim()) {
+          fullText = "Aku mendengar apa yang kamu sampaikan. Pelan-pelan saja ya, aku di sini menemanimu. Ada yang ingin kamu ceritakan lebih jauh?";
+        }
+
         msgAnna.innerHTML = fullText.replace(/\n/g, '<br>') + `<div class="msg-time">${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>`;
         setAvatarState('siap');
         bicara(fullText);
