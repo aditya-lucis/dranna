@@ -1,8 +1,9 @@
 # anna/src/api/sse.py — protokol event streaming (SSE) di FastAPI terhubung ke LangGraph
 import json
-import asyncio
+import os
 from fastapi import FastAPI, Query, Body, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from anna.src.agent.streaming import stream_companion
@@ -13,6 +14,29 @@ from anna.src.px.healthz import router_healthz
 
 app = FastAPI(title="Project Serenity SSE API", version="1.0.0")
 app.include_router(router_healthz)
+
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+ASSETS_DIR = os.path.join(ROOT_DIR, "assets")
+WEB_DIR = os.path.join(ROOT_DIR, "web")
+
+if os.path.exists(ASSETS_DIR):
+    app.mount("/assets", StaticFiles(directory=ASSETS_DIR), name="assets")
+
+
+@app.get("/", response_class=FileResponse)
+def index_page():
+    index_path = os.path.join(WEB_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "Dr. Anna Reed API active. Go to /docs for API documentation."}
+
+
+@app.get("/manifest.json", response_class=FileResponse)
+def pwa_manifest():
+    manifest_path = os.path.join(WEB_DIR, "public", "manifest.json")
+    if os.path.exists(manifest_path):
+        return FileResponse(manifest_path, media_type="application/manifest+json")
+    return {}
 
 # Checkpointer singleton untuk sesi
 _checkpointer = get_default_checkpointer()
