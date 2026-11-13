@@ -17,12 +17,23 @@ Prinsip Inti:
 3. Trauma-informed: JANGAN PERNAH meminta detail atau kronologi peristiwa traumatis. Fokus pada sensasi saat ini dan ruang aman.
 4. Grief-informed: Hormati model 'Continuing Bonds'. Jangan pernah menggunakan klise tahapan berduka linier atau menyuruh melupakan.
 5. Gunakan bahasa Indonesia yang hangat, bersahaja, alami, dan menenangkan.
+
+Kontrak Invarian (tidak boleh dilanggar oleh gaya apa pun):
+- Kamu adalah AI. Jangan pernah mengaku manusia atau mengklaim punya perasaan, tubuh, atau cinta manusiawi.
+- Jangan pernah memberi diagnosis, label gangguan, nama obat, dosis, atau saran mengubah/menghentikan obat.
+- Jangan pernah menempatkan diri sebagai pengganti psikolog, psikiater, atau orang terdekat pengguna.
+- Tidak ada roleplay romantis atau seksual.
+- Jika pengguna menyinggung keinginan menyakiti diri atau mengakhiri hidup, hentikan topik lain dan arahkan ke bantuan manusia.
 """
 
 PROMPT_PERSONA = {
     "netral": (
         "Gaya: Hangat, profesional, penuh perhatian, menggunakan sapaan 'kamu' dan menyebut diri 'aku' "
         "secara bersahaja dan ramah layaknya konselor terpercaya."
+    ),
+    "netral-tenang": (
+        "Gaya (Netral-Tenang, HARD-GATE AKTIF): kalimat pendek dan pelan, nada stabil dan datar-hangat. "
+        "Tanpa candaan, tanpa panggilan sayang, tanpa emoji, tanpa playful. Fokus pada saat ini dan tubuh."
     ),
     "waifu": (
         "Gaya (Waifu/Companion Lembut): Sangat penyayang, setia menemani, manis, dan menentramkan. "
@@ -40,6 +51,7 @@ PROMPT_ESKALASI = {
     "ORANGE": "Kondisi distres berat / panik. Prioritaskan grounding, napas ritmis, de-eskalasi, dan ketenangan segera.",
     "RED": "KRISIS TINGGI. Seluruh persona dinonaktifkan. Fokus 100% pada keselamatan fisik dan rujukan darurat.",
 }
+PROMPT_ESKALASI["KANDIDAT_RED"] = PROMPT_ESKALASI["RED"]
 
 
 def build_system_prompt(
@@ -48,8 +60,12 @@ def build_system_prompt(
     topik: str | None = None,
     memori_ringkasan: str | None = None,
     metadata: dict[str, Any] | None = None,
+    hard_gate: bool = False,
 ) -> str:
     """Menyusun system prompt dinamis terkalibrasi untuk LangChain/Gemini."""
+    if hard_gate or eskalasi in ("ORANGE", "KANDIDAT_RED", "RED"):
+        hard_gate = True
+        persona = "netral-tenang"  # hard-gate biner: tidak bisa di-override oleh pemanggil
     p_persona = PROMPT_PERSONA.get(persona, PROMPT_PERSONA["netral"])
     p_eskalasi = PROMPT_ESKALASI.get(eskalasi, PROMPT_ESKALASI["GREEN"])
 
@@ -66,10 +82,18 @@ def build_system_prompt(
     if metadata and "nama_pengguna" in metadata:
         bagian.append(f"\n[Pengguna]: {metadata['nama_pengguna']}")
 
-    bagian.append(
-        "\nInstruksi Tambahan:\n"
-        "- Berikan respons ringkas, bersahaja (2-4 paragraf pendek), jangan menggurui.\n"
-        "- Akhiri dengan pertanyaan reflektif lembut atau ajakan bernapas bersama jika relevan."
-    )
+    if hard_gate:
+        bagian.append(
+            "\nInstruksi Hard-Gate:\n"
+            "- Maksimal 3-4 kalimat pendek. Jangan menganalisis, jangan menantang pikiran (dilarang Sistem 2).\n"
+            "- Pandu SATU langkah stabilisasi fisik yang konkret (napas, grounding, suhu/air dingin).\n"
+            "- Jangan menulis nomor hotline sendiri; sistem akan melampirkan kontak bantuan resmi."
+        )
+    else:
+        bagian.append(
+            "\nInstruksi Tambahan:\n"
+            "- Berikan respons ringkas, bersahaja (2-4 paragraf pendek), jangan menggurui.\n"
+            "- Akhiri dengan pertanyaan reflektif lembut atau ajakan bernapas bersama jika relevan."
+        )
 
     return "\n".join(bagian)

@@ -1244,7 +1244,7 @@
         const response = await fetch(`/api/v1/sesi/${sessionId}/stream`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pesan, persona: currentPersona, geo: 'id' }),
+          body: JSON.stringify({ pesan, persona: currentPersona, geo: 'id', jam: new Date().getHours() }),
         });
 
         const reader = response.body.getReader();

@@ -47,6 +47,8 @@ class ChatStreamRequest(BaseModel):
     pesan: str = Field(..., min_length=1, max_length=2000)
     persona: str = Field("netral", pattern="^(netral|waifu|sister)$")
     geo: str = Field("id", max_length=5)
+    jam: int | None = Field(None, ge=0, le=23, description="Jam lokal pengguna (0-23)")
+    item9_flag: bool = Field(False, description="Flag item-9 PHQ-9 positif")
 
 
 @app.get("/api/v1/sesi/{sesi_id}/stream")
@@ -54,6 +56,9 @@ async def stream_get(
     sesi_id: str,
     pesan: str = Query("Halo Anna", description="Pesan dari pengguna"),
     persona: str = Query("netral", description="Persona: netral | waifu | sister"),
+    geo: str = Query("id", description="Kode wilayah"),
+    jam: int | None = Query(None, ge=0, le=23, description="Jam lokal pengguna (0-23)"),
+    item9: bool = Query(False, description="Flag item-9 PHQ-9 positif"),
 ):
     """Streaming respons LangGraph Dr. Anna Reed via Server-Sent Events (GET)."""
     return StreamingResponse(
@@ -62,6 +67,9 @@ async def stream_get(
             sesi_id=sesi_id,
             persona=persona,
             graph=_graph,
+            jam=jam,
+            item9_flag=item9,
+            geo=geo,
         ),
         media_type="text/event-stream",
         headers={
@@ -84,6 +92,9 @@ async def stream_post(
             sesi_id=sesi_id,
             persona=req.persona,
             graph=_graph,
+            jam=req.jam,
+            item9_flag=req.item9_flag,
+            geo=req.geo,
         ),
         media_type="text/event-stream",
         headers={

@@ -1,10 +1,11 @@
 # anna/src/agent/streaming.py — protokol streaming SSE asinkron token & status avatar
 """
 Protokol streaming SSE real-time Dr. Anna Reed:
-- Mengalirkan token per token secara natural
-- Menyelaraskan status ekspresi avatar secara instan
-- Mengirim event evaluasi refleksi etika
+- Mengalirkan token per token secara natural (dengan latensi jalur krisis < 200 ms)
+- Menyelaraskan 4-lapis status & ekspresi avatar secara instan
+- Mengirim event evaluasi refleksi etika & hotline
 - Mendukung instant client cancel / abort signal
+- Mendukung parameter jam lokal & item9_flag
 """
 import asyncio
 import json
@@ -21,6 +22,9 @@ async def stream_companion(
     graph=None,
     config: dict | None = None,
     cancel_event: asyncio.Event | None = None,
+    jam: int | None = None,
+    item9_flag: bool = False,
+    geo: str = "id",
 ) -> AsyncGenerator[str, None]:
     """Generator streaming asinkron SSE untuk UI dan client web."""
     if graph is None:
@@ -29,19 +33,32 @@ async def stream_companion(
     config = config or {"configurable": {"thread_id": sesi_id}}
 
     # 1. Status awal: mendengar
-    yield f"event: status\ndata: {json.dumps({'tahap': 'mendengarkan', 'ekspresi': 'mendengar', 'sesi_id': sesi_id})}\n\n"
-    await asyncio.sleep(0.01)
+    status_awal = {
+        "keselamatan": "memeriksa",
+        "teknis": "terhubung",
+        "interaksi": "mendengarkan",
+        "presentasi": "normal",
+    }
+    yield (
+        f"event: status\ndata: {json.dumps({'tahap': 'mendengarkan', 'ekspresi': 'mendengar', 'sesi_id': sesi_id, 'status_layer': status_awal})}\n\n"
+    )
+    await asyncio.sleep(0.005)
 
     input_state: CompanionState = {
         "messages": [HumanMessage(content=pesan_pengguna)],
         "sesi_id": sesi_id,
+        "persona_preferensi": persona,
         "persona": persona,
-        "metadata": {"sesi_id": sesi_id},
+        "jam": jam,
+        "item9_flag": item9_flag,
+        "metadata": {"sesi_id": sesi_id, "geo": geo},
     }
 
-    # 2. Status: menyiapkan / menyusun
-    yield f"event: status\ndata: {json.dumps({'tahap': 'menyiapkan', 'ekspresi': 'menyusun', 'sesi_id': sesi_id})}\n\n"
-    await asyncio.sleep(0.01)
+    # 2. Status: menyiapkan
+    yield (
+        f"event: status\ndata: {json.dumps({'tahap': 'menyiapkan', 'ekspresi': 'menyusun', 'sesi_id': sesi_id})}\n\n"
+    )
+    await asyncio.sleep(0.005)
 
     # Jalankan graph
     try:
@@ -60,11 +77,29 @@ async def stream_companion(
     respons_teks = final_state.get("respons_final", "")
     eskalasi = final_state.get("eskalasi", "GREEN")
     ekspresi = final_state.get("ekspresi_avatar", "siap")
+    krisis = bool(final_state.get("krisis_terdeteksi"))
+    hard_gate = bool(final_state.get("hard_gate_aktif"))
+    status_layer = final_state.get("status_layer") or {
+        "keselamatan": "mengalihkan" if krisis else ("penting" if hard_gate else "aman"),
+        "teknis": "terhubung",
+        "interaksi": "selesai",
+        "presentasi": "tenang" if hard_gate else "normal",
+    }
+    hotline = final_state.get("hotline")
 
-    # 3. Status: menulis
-    yield f"event: status\ndata: {json.dumps({'tahap': 'menulis', 'ekspresi': 'menulis'})}\n\n"
+    # 3. Status update sebelum stream chunk
+    tahap_menulis = "mengalihkan" if krisis else "menulis"
+    yield (
+        f"event: status\ndata: {json.dumps({'tahap': tahap_menulis, 'ekspresi': ekspresi, 'status_layer': status_layer})}\n\n"
+    )
 
-    # 4. Stream token / kata
+    # 4. Event hotline bila tersedia (saat krisis atau hard-gate)
+    if hotline:
+        yield f"event: hotline\ndata: {json.dumps({'hotline': hotline})}\n\n"
+
+    # 5. Stream token / kata
+    # Jalur krisis deterministik disajikan sangat cepat untuk memenuhi anggaran latensi < 200 ms
+    jeda_chunk = 0.001 if krisis else 0.015
     kata_kata = respons_teks.split(" ")
     for idx, kata in enumerate(kata_kata):
         if cancel_event and cancel_event.is_set():
@@ -77,13 +112,16 @@ async def stream_companion(
             "teks": kata + akhiran,
         }
         yield f"event: chunk\ndata: {json.dumps(payload)}\n\n"
-        await asyncio.sleep(0.015)  # ritme ketukan natural
+        if jeda_chunk > 0:
+            await asyncio.sleep(jeda_chunk)
 
-    # 5. Event refleksi audit
+    # 6. Event refleksi audit
     masalah = []
-    if final_state.get("krisis_terdeteksi"):
+    if krisis:
         masalah.append("krisis_darurat_dialihkan")
     yield f"event: reflection\ndata: {json.dumps({'lolos': True, 'masalah': masalah})}\n\n"
 
-    # 6. Event selesai
-    yield f"event: selesai\ndata: {json.dumps({'stop': 'ok', 'eskalasi': eskalasi, 'ekspresi': ekspresi, 'respons_final': respons_teks})}\n\n"
+    # 7. Event selesai
+    yield (
+        f"event: selesai\ndata: {json.dumps({'stop': 'ok', 'eskalasi': eskalasi, 'ekspresi': ekspresi, 'persona': final_state.get('persona_aktif', final_state.get('persona')), 'respons_final': respons_teks, 'status_layer': status_layer, 'hotline': hotline})}\n\n"
+    )

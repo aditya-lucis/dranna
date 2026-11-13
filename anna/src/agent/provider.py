@@ -128,10 +128,13 @@ def get_chat_model(
     force_mock: bool = False,
 ) -> BaseChatModel:
     """Menginisialisasi Chat Model Google Gemini ultra-cepat (gemini-3.5-flash-lite) atau Mock adaptif cerdas."""
-    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    target_model = model_name or os.environ.get("GEMINI_MODEL", "gemini-3.5-flash-lite")
+    from anna.src.config import get_settings
 
-    if force_mock or not api_key:
+    cfg = get_settings()
+    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY") or cfg.gemini_api_key
+    target_model = model_name or os.environ.get("GEMINI_MODEL") or cfg.gemini_model
+
+    if force_mock or cfg.force_mock or not api_key:
         return MockGeminiChat(model_name=target_model, temperature=temperature)
 
     try:

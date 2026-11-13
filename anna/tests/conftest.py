@@ -3,6 +3,8 @@ import os
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
+# Test suite TIDAK boleh menyentuh jaringan/LLM asli, walau .env berisi kunci Gemini.
+os.environ["ANNA_FORCE_MOCK"] = "1"
 import pytest
 
 
