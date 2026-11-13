@@ -16,6 +16,8 @@ from anna.src.storage.safety_plan_repo import SafetyPlanRepository, SafetyPlanMo
 from anna.src.storage.episodic_repo import EpisodicRepository
 from anna.src.klinik.pertanyaan_asesmen import dapatkan_paket_asesmen
 from anna.src.pix.journal import CatatanJurnal
+from anna.src.pix.speech import siapkan_parameter_suara, bersihkan_teks_untuk_suara
+from anna.src.pix.vision import ProksiVisualInput, evaluasi_visual_suportif
 from anna.src.px.healthz import router_healthz
 
 app = FastAPI(title="Project Serenity SSE API", version="1.0.0")
@@ -260,3 +262,32 @@ def catat_memori_user(user_id: str, data: RecordMemoryInput):
         teknik=data.teknik,
     )
     return {"status": "tersimpan", "memori": hasil.model_dump()}
+
+
+# =====================================================================
+# ENDPOINTS MULTIMODAL & VOICE / VISION (FASE 3 SPRINT 3.1 & 3.3)
+# =====================================================================
+class CleanTextRequest(BaseModel):
+    teks: str
+
+
+@app.get("/api/v1/voice/config")
+def dapatkan_config_vokal(mode: str = "normal"):
+    """Mengembalikan parameter intonasi vokal TTS terkalibrasi sesuai situasi psikologis."""
+    return siapkan_parameter_suara(mode).model_dump()
+
+
+@app.post("/api/v1/voice/clean")
+def bersihkan_teks_vokal(req: CleanTextRequest):
+    """Membersihkan format markdown/URL agar aman dan terdengar alami sebelum dibaca TTS."""
+    return {"teks_bersih": bersihkan_teks_untuk_suara(req.teks)}
+
+
+@app.post("/api/v1/user/{user_id}/vision")
+def analisis_visual_proksi(user_id: str, input_data: ProksiVisualInput):
+    """Evaluasi proksi lingkungan pencahayaan/postur Zero-Biometrics dengan kepatuhan consent."""
+    input_data.user_id = user_id
+    c = _consent_repo.dapatkan_consent(user_id)
+    hasil = evaluasi_visual_suportif(data=input_data, izin_consent=c.izin_analisis_ekspresi)
+    return hasil.model_dump()
+

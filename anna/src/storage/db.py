@@ -53,6 +53,7 @@ def init_db(db_path: Path | None = None):
             izin_psikoedukasi INTEGER DEFAULT 1,
             izin_simpan_riwayat INTEGER DEFAULT 1,
             izin_analisis_mood INTEGER DEFAULT 1,
+            izin_analisis_ekspresi INTEGER DEFAULT 0,
             durasi_simpan_hari INTEGER DEFAULT 90,
             topik_sensitif_diizinkan TEXT DEFAULT '[]',
             dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -110,4 +111,9 @@ def init_db(db_path: Path | None = None):
         );
         CREATE INDEX IF NOT EXISTS idx_asesmen_user ON asesmen_klinis(user_id);
         """)
+        try:
+            conn.execute("ALTER TABLE consent_ledger ADD COLUMN izin_analisis_ekspresi INTEGER DEFAULT 0;")
+        except sqlite3.OperationalError:
+            pass  # Kolom sudah ada
+
 

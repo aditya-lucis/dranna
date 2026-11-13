@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <!-- Three.js untuk Cyberzen 3D Ambient Background -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
       --bg-dark: #08060a;
@@ -534,6 +536,73 @@
       font-family: inherit;
     }
     .chat-input-field::placeholder { color: var(--text-dim); }
+
+    /* Tombol Mic STT (Fase 3 Sprint 3.1) */
+    .btn-mic-round {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.25s;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+    .btn-mic-round:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: scale(1.05);
+    }
+    .btn-mic-round.listening {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: var(--primary);
+      color: #fda4af;
+      animation: micPulse 1.2s infinite ease-in-out;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+    @keyframes micPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(244, 63, 94, 0.4); }
+      50% { transform: scale(1.12); box-shadow: 0 0 26px rgba(244, 63, 94, 0.85); }
+    }
+
+    /* Three.js Cyberzen 3D Canvas Background */
+    #cyberzen-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.75;
+      transition: opacity 1.5s ease;
+    }
+
+    /* 3D Parallax Tilt Effects */
+    .parallax-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      transition: transform 0.18s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.25s ease;
+      will-change: transform;
+    }
+    .parallax-shine {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 4;
+    }
+    .parallax-card:hover .parallax-shine {
+      opacity: 1;
+    }
+
     .btn-send-round {
       width: 44px;
       height: 44px;
@@ -547,6 +616,7 @@
       cursor: pointer;
       box-shadow: 0 4px 16px rgba(244, 63, 94, 0.4);
       transition: all 0.2s;
+      flex-shrink: 0;
     }
     .btn-send-round:hover {
       transform: scale(1.06);
@@ -945,6 +1015,9 @@
   </style>
 </head>
 <body>
+  <!-- Three.js 3D Ambient Cyberzen Canvas Background -->
+  <canvas id="cyberzen-canvas"></canvas>
+
   <!-- Ambient background glow -->
   <div class="ambient-glow glow-1"></div>
   <div class="ambient-glow glow-2"></div>
@@ -995,8 +1068,10 @@
     <!-- ============================================== -->
     <!-- KOLOM 1: PORTRAIT DR. ANNA REED (BESAR & JELAS)-->
     <!-- ============================================== -->
-    <section class="glass-card">
-      <div class="portrait-wrap" onclick="toggleGlasses()" title="Klik gambar untuk berganti pose!">
+    <section class="glass-card parallax-card" id="col-portrait">
+      <div class="parallax-shine"></div>
+      <div class="portrait-wrap parallax-card" onclick="toggleGlasses()" title="Klik gambar untuk berganti pose!">
+        <div class="parallax-shine"></div>
         <img id="main-portrait" class="portrait-img" src="/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp" alt="Dr. Anna Reed Visual">
         <div class="portrait-overlay-gradient"></div>
 
@@ -1017,7 +1092,7 @@
         </div>
       </div>
 
-      <!-- Pose Switcher -->
+      <!-- Pose & Vision Switcher -->
       <div class="pose-btn-row">
         <button id="btn-pose-glasses" class="pose-btn active" onclick="setPose('glasses')">
           👓 Pose Kacamata
@@ -1025,6 +1100,28 @@
         <button id="btn-pose-focus" class="pose-btn" onclick="setPose('focus')">
           ✨ Tatap Langsung
         </button>
+      </div>
+
+      <!-- Vision Cermin Postur & Pencahayaan (Fase 3 Sprint 3.3 Opt-in) -->
+      <div style="margin-top:8px;">
+        <button id="btn-cam-toggle" class="pose-btn" style="width:100%; border-color:rgba(56,189,248,0.3); color:var(--accent-cyan);" onclick="toggleVisionCam()">
+          📹 Cermin Postur & Cahaya
+        </button>
+      </div>
+
+      <div id="vision-cam-box" style="display:none; margin-top:8px; background:rgba(0,0,0,0.6); border:1px solid rgba(56,189,248,0.3); border-radius:14px; padding:10px; position:relative;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.74rem; font-weight:700; color:var(--accent-cyan); display:flex; align-items:center; gap:6px;">
+            <span class="online-indicator" style="background:#38bdf8; box-shadow:0 0 8px #38bdf8;"></span>
+            <span>Cermin Postur Nyata</span>
+          </span>
+          <span style="font-size:0.64rem; color:#10b981; background:rgba(16,185,129,0.15); padding:2px 6px; border-radius:8px;">Zero-Biometrics</span>
+        </div>
+        <video id="webcam-video" autoplay playsinline muted style="width:100%; border-radius:10px; max-height:140px; object-fit:cover; transform:scaleX(-1); background:#000;"></video>
+        <canvas id="vision-calc-canvas" width="64" height="48" style="display:none;"></canvas>
+        <div id="vision-feedback-text" style="font-size:0.72rem; color:var(--text-muted); margin-top:6px; line-height:1.4;">
+          Menilai kenyamanan pencahayaan sekitarmu...
+        </div>
       </div>
 
       <!-- Bio Singkat -->
@@ -1043,7 +1140,8 @@
     <!-- ============================================== -->
     <!-- KOLOM 2: CHAT CONVERSATION SPACE               -->
     <!-- ============================================== -->
-    <section class="glass-card chat-col">
+    <section class="glass-card chat-col parallax-card">
+      <div class="parallax-shine"></div>
       <!-- Persona Pills -->
       <div class="persona-pills">
         <button class="persona-pill active" onclick="pilihPersona('waifu', this)">
@@ -1090,6 +1188,9 @@
 
       <!-- Input Bar -->
       <form class="chat-input-bar" onsubmit="handleSend(event)">
+        <button type="button" class="btn-mic-round" id="mic-btn" onclick="toggleSTT()" title="Bicara dengan Suara (STT Voice Input)">
+          🎙️
+        </button>
         <input
           type="text"
           id="chat-input"
@@ -1109,7 +1210,8 @@
     <!-- ============================================== -->
     <!-- KOLOM 3: THERAPEUTIC TOOLKIT & REGULASI        -->
     <!-- ============================================== -->
-    <section class="glass-card col-tools">
+    <section class="glass-card col-tools parallax-card">
+      <div class="parallax-shine"></div>
       <div class="tools-nav">
         <button class="tool-tab-btn active" onclick="switchToolTab('pane-breath', this)">🌬️ 4-7-8</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-grounding', this)">🌿 5-4-3</button>
@@ -1135,52 +1237,39 @@
           </p>
 
           <button class="btn-action-breath" id="breath-toggle" onclick="toggleBreathing()">
-            Mulai Pernapasan 4-7-8
+            Mulai Pernapasan 4-7-8 (Dentingan Zen)
           </button>
         </div>
       </div>
 
-      <!-- Tab 2: Grounding 5-4-3-2-1 -->
+      <!-- Tab 2: Grounding 5-4-3-2-1 Interaktif (Fase 3 Sprint 3.2) -->
       <div id="pane-grounding" class="tool-pane">
-        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
-          Gunakan indera tubuh untuk meredakan serangan panik:
-        </p>
-        <div class="ground-list">
-          <div class="ground-card">
-            <div class="ground-badge">5</div>
-            <div>
-              <div class="ground-title">Lihat 5 Benda</div>
-              <div class="ground-desc">Perhatikan warna atau bayangan di sekitarmu.</div>
-            </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.8rem; font-weight:700; color:#fff;" id="grounding-step-label">Langkah 1 dari 5: Penglihatan</span>
+          <span class="mood-trend-badge badge-trend-good" id="grounding-status-badge">Target: 5 Benda</span>
+        </div>
+
+        <!-- Progress bar grounding -->
+        <div style="background:rgba(255,255,255,0.08); height:4px; border-radius:999px; overflow:hidden; margin-bottom:12px;">
+          <div id="grounding-prog-bar" style="background:var(--accent-cyan); height:100%; width:20%; transition:width 0.3s ease;"></div>
+        </div>
+
+        <div id="grounding-wizard-card" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:16px; padding:14px; margin-bottom:12px;">
+          <p id="grounding-inst-text" style="font-size:0.82rem; color:#fff; line-height:1.5; margin-bottom:10px;">
+            Sebutkan atau perhatikan 5 benda yang kamu LIHAT di sekitarmu saat ini.
+          </p>
+          <div id="grounding-checklist" style="display:flex; flex-direction:column; gap:6px;">
+            <!-- Generated dynamically -->
           </div>
-          <div class="ground-card">
-            <div class="ground-badge">4</div>
-            <div>
-              <div class="ground-title">Sentuh 4 Tekstur</div>
-              <div class="ground-desc">Meja, bahan pakaian, jam tangan, atau jari.</div>
-            </div>
-          </div>
-          <div class="ground-card">
-            <div class="ground-badge">3</div>
-            <div>
-              <div class="ground-title">Dengar 3 Suara</div>
-              <div class="ground-desc">Kipas angin, deru jalan, atau napasmu.</div>
-            </div>
-          </div>
-          <div class="ground-card">
-            <div class="ground-badge">2</div>
-            <div>
-              <div class="ground-title">Cium 2 Aroma</div>
-              <div class="ground-desc">Aroma kopi, kayu, atau hawa ruangan.</div>
-            </div>
-          </div>
-          <div class="ground-card">
-            <div class="ground-badge">1</div>
-            <div>
-              <div class="ground-title">Rasakan 1 Hal Baik</div>
-              <div class="ground-desc">Rasa syukur kecil bahwa kamu aman saat ini.</div>
-            </div>
-          </div>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+          <button id="btn-grounding-next" class="btn-action-breath" style="flex:1; border-radius:12px;" onclick="lanjutGroundingStep()">
+            Lanjut Langkah Berikutnya ➜
+          </button>
+          <button class="pose-btn" onclick="resetGroundingWizard()" title="Ulangi dari Langkah 1">
+            🔄
+          </button>
         </div>
       </div>
 
@@ -1461,6 +1550,14 @@
           </div>
           <input type="checkbox" id="consent-mood" class="switch-input" checked onchange="simpanConsent()">
         </div>
+
+        <div class="switch-row">
+          <div class="switch-info">
+            <div class="switch-title">Cermin Postur & Pencahayaan (Vision)</div>
+            <div class="switch-desc">Menganalisis pencahayaan dan kenyamanan postur secara lokal (Zero-Biometrics: tanpa simpan foto/video).</div>
+          </div>
+          <input type="checkbox" id="consent-ekspresi" class="switch-input" onchange="simpanConsent()">
+        </div>
       </div>
 
       <!-- Right to be Forgotten (RTBF) -->
@@ -1505,8 +1602,11 @@
       setPose(currentPose === 'glasses' ? 'focus' : 'glasses');
     }
 
-    // Set Avatar State Text & Visualizer
+    let currentAvatarState = 'siap';
+
+    // Set Avatar State Text & Visualizer (Fase 3 Multi-Modal Hard-Gate)
     function setAvatarState(state) {
+      currentAvatarState = state;
       const el = document.getElementById('status-desc-text');
       const viz = document.getElementById('visualizer');
       const portrait = document.querySelector('.portrait-wrap');
@@ -1521,6 +1621,19 @@
 
       if (portrait) {
         portrait.classList.toggle('calm-mode', state === 'tenang');
+      }
+
+      // Hubungkan ke Three.js Ambient background theme
+      if (typeof updateThreeTheme === 'function') {
+        updateThreeTheme(state === 'tenang' ? 'calm' : 'warm');
+      }
+
+      // Hard-Gate Shutdown Multi-Modal saat TENANG / KRISIS
+      if (state === 'tenang') {
+        if (typeof stopVisionCam === 'function') stopVisionCam();
+        if (typeof isListening !== 'undefined' && isListening && typeof toggleSTT === 'function') {
+          toggleSTT();
+        }
       }
 
       if (state === 'menulis') {
@@ -1549,18 +1662,92 @@
       }
     }
 
-    // Web Speech API
-    function bicara(teks) {
+    // Web Speech API Text-to-Speech (TTS) Tuning (Fase 3 Sprint 3.1)
+    function bicara(teks, paksaTenang = false) {
       if (!ttsActive || !('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
-      const clean = teks.replace(/[*_#`~]/g, '');
+      // Sanitasi teks: bersihkan tautan markdown, bold/italic, tanda kutip
+      let clean = teks.replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1');
+      clean = clean.replace(/[*_#`~]/g, '');
+      clean = clean.replace(/^\s*[-*+]\s+/gm, '');
+      
       const utter = new SpeechSynthesisUtterance(clean);
       utter.lang = 'id-ID';
-      utter.pitch = 1.08;
-      utter.rate = 0.95;
+
+      // Kalibrasi intonasi: Tenang/Krisis = ritme de-eskalasi lambat 0.80x
+      if (paksaTenang || currentAvatarState === 'tenang') {
+        utter.pitch = 0.96;
+        utter.rate = 0.80; // Hard-gate ritme de-eskalasi
+      } else {
+        utter.pitch = currentPersona === 'waifu' ? 1.05 : 0.98;
+        utter.rate = 0.92;
+      }
+
       utter.onstart = () => document.getElementById('visualizer').classList.add('speaking');
       utter.onend = () => document.getElementById('visualizer').classList.remove('speaking');
+      utter.onerror = () => document.getElementById('visualizer').classList.remove('speaking');
       window.speechSynthesis.speak(utter);
+    }
+
+    // Web Speech API Speech-to-Text (STT) Voice Input (Fase 3 Sprint 3.1)
+    let sttRecognition = null;
+    let isListening = false;
+
+    function toggleSTT() {
+      const micBtn = document.getElementById('mic-btn');
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Fitur pengenalan suara (STT) tidak didukung di browser ini. Mohon gunakan Google Chrome atau browser berbasis Chromium.');
+        return;
+      }
+
+      if (isListening) {
+        if (sttRecognition) sttRecognition.stop();
+        isListening = false;
+        micBtn.classList.remove('listening');
+        setAvatarState('siap');
+        return;
+      }
+
+      try {
+        sttRecognition = new SpeechRecognition();
+        sttRecognition.lang = 'id-ID';
+        sttRecognition.continuous = false;
+        sttRecognition.interimResults = true;
+
+        sttRecognition.onstart = () => {
+          isListening = true;
+          micBtn.classList.add('listening');
+          setAvatarState('mendengarkan');
+        };
+
+        sttRecognition.onresult = (event) => {
+          let transcript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+          }
+          const chatInput = document.getElementById('chat-input');
+          chatInput.value = transcript;
+          chatInput.focus();
+        };
+
+        sttRecognition.onerror = () => {
+          isListening = false;
+          micBtn.classList.remove('listening');
+          setAvatarState('siap');
+        };
+
+        sttRecognition.onend = () => {
+          isListening = false;
+          micBtn.classList.remove('listening');
+          setAvatarState('siap');
+        };
+
+        sttRecognition.start();
+      } catch (err) {
+        isListening = false;
+        micBtn.classList.remove('listening');
+      }
     }
 
     // Quick chip filler
@@ -1624,6 +1811,7 @@
         let buffer = '';
         let fullText = '';
         let firstChunk = true;
+        let isCrisis = false;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -1653,7 +1841,14 @@
                 container.scrollTop = container.scrollHeight;
               } else if (eventType === 'status') {
                 if (data.ekspresi) setAvatarState(data.ekspresi);
+                if (data.eskalasi && ['ORANGE', 'MERAH'].includes(data.eskalasi.toUpperCase())) {
+                  isCrisis = true;
+                  setAvatarState('tenang');
+                  bukaModal('modal-sos');
+                }
               } else if (eventType === 'reflection' && data.masalah && data.masalah.includes('krisis_darurat_dialihkan')) {
+                isCrisis = true;
+                setAvatarState('tenang');
                 bukaModal('modal-sos');
               } else if (eventType === 'selesai' && data.respons_final) {
                 if (!fullText) fullText = data.respons_final;
@@ -1668,8 +1863,12 @@
 
         bubbleEl.innerHTML = fullText.replace(/\n/g, '<br>');
         timeEl.innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        setAvatarState('siap');
-        bicara(fullText);
+        if (!isCrisis) {
+          setAvatarState('siap');
+        } else {
+          setAvatarState('tenang');
+        }
+        bicara(fullText, isCrisis);
       } catch (err) {
         bubbleEl.innerHTML = 'Maaf, sambungan terganggu sejenak. Aku tetap di sini menemanimu.';
         setAvatarState('siap');
@@ -1699,7 +1898,40 @@
       }
     }
 
-    // Pernapasan 4-7-8 Engine
+    // Procedural Tibetan Singing Bowl Chime (Web Audio API - Fase 3 Sprint 3.2)
+    let chimeAudioCtx = null;
+    function playTibetanChime(baseFreq = 432, duration = 3.0) {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!chimeAudioCtx) chimeAudioCtx = new AudioContext();
+        if (chimeAudioCtx.state === 'suspended') chimeAudioCtx.resume();
+
+        const now = chimeAudioCtx.currentTime;
+        const harmonics = [1, 2, 2.76, 5.4];
+        const harmonicGains = [0.14, 0.07, 0.035, 0.015];
+
+        harmonics.forEach((h, idx) => {
+          const osc = chimeAudioCtx.createOscillator();
+          const gain = chimeAudioCtx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(baseFreq * h, now);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * h * 0.998, now + duration);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.exponentialRampToValueAtTime(harmonicGains[idx], now + 0.05);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+          osc.connect(gain);
+          gain.connect(chimeAudioCtx.destination);
+
+          osc.start(now);
+          osc.stop(now + duration);
+        });
+      } catch (err) {}
+    }
+
+    // Pernapasan 4-7-8 Engine dengan Dentingan Somatik
     let breathTimer = null;
     let breathSec = 0;
     function toggleBreathing() {
@@ -1707,7 +1939,7 @@
       if (breathTimer) {
         clearInterval(breathTimer);
         breathTimer = null;
-        btn.innerText = 'Mulai Pernapasan 4-7-8';
+        btn.innerText = 'Mulai Pernapasan 4-7-8 (Dentingan Zen)';
         document.getElementById('breath-phase').innerText = 'Tenang';
         document.getElementById('breath-num').innerText = '•';
         document.getElementById('breath-circle').style.transform = 'scale(1)';
@@ -1715,6 +1947,8 @@
       }
       btn.innerText = 'Hentikan Latihan';
       breathSec = 0;
+      playTibetanChime(432, 2.8); // Chime pembuka
+
       breathTimer = setInterval(() => {
         breathSec++;
         const pos = breathSec % 19;
@@ -1724,16 +1958,19 @@
         const inst = document.getElementById('breath-inst');
 
         if (pos < 4) {
+          if (pos === 0) playTibetanChime(432, 2.8); // Nada 432 Hz: Tarik napas
           phase.innerText = 'Tarik';
           num.innerText = 4 - pos;
           circle.style.transform = 'scale(1.22)';
           inst.innerText = 'Tarik napas perlahan melalui hidung... Rasakan udara masuk.';
         } else if (pos < 11) {
+          if (pos === 4) playTibetanChime(528, 3.2); // Nada 528 Hz: Tahan napas
           phase.innerText = 'Tahan';
           num.innerText = 11 - pos;
           circle.style.transform = 'scale(1.22)';
           inst.innerText = 'Tahan dengan santai, jangan tegang... Tenangkan detak jantung.';
         } else {
+          if (pos === 11) playTibetanChime(396, 3.5); // Nada 396 Hz: Hembuskan napas
           phase.innerText = 'Hembus';
           num.innerText = 19 - pos;
           circle.style.transform = 'scale(1)';
@@ -2012,7 +2249,7 @@
       if (e.target.id === id) document.getElementById(id).style.display = 'none';
     }
 
-    // Consent Ledger Handlers (Fase 2)
+    // Consent Ledger Handlers (Fase 2 & Fase 3)
     async function muatConsent() {
       try {
         const res = await fetch(`/api/v1/user/${sessionId}/consent`);
@@ -2021,6 +2258,9 @@
           document.getElementById('consent-psiko').checked = c.izin_psikoedukasi;
           document.getElementById('consent-riwayat').checked = c.izin_simpan_riwayat;
           document.getElementById('consent-mood').checked = c.izin_analisis_mood;
+          if (document.getElementById('consent-ekspresi')) {
+            document.getElementById('consent-ekspresi').checked = !!c.izin_analisis_ekspresi;
+          }
         }
       } catch (err) {}
     }
@@ -2031,6 +2271,7 @@
         izin_psikoedukasi: document.getElementById('consent-psiko').checked,
         izin_simpan_riwayat: document.getElementById('consent-riwayat').checked,
         izin_analisis_mood: document.getElementById('consent-mood').checked,
+        izin_analisis_ekspresi: document.getElementById('consent-ekspresi') ? document.getElementById('consent-ekspresi').checked : false,
       };
       try {
         await fetch(`/api/v1/user/${sessionId}/consent`, {
@@ -2238,7 +2479,342 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', muatConsent);
+    // =========================================================================
+    // THREE.JS 3D AMBIENT CYBERZEN PARTICLE BACKGROUND (FASE 3)
+    // =========================================================================
+    let threeScene, threeCamera, threeRenderer, threeParticles;
+    let particleColors, particlePositions;
+    let mouseX = 0, mouseY = 0;
+    let targetCameraX = 0, targetCameraY = 0;
+    let activeThreeTheme = 'warm';
+
+    function initThreeCyberzen() {
+      const canvas = document.getElementById('cyberzen-canvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      threeScene = new THREE.Scene();
+      threeCamera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
+      threeCamera.position.z = 400;
+
+      threeRenderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      threeRenderer.setSize(width, height);
+      threeRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      const particleCount = 450;
+      const geometry = new THREE.BufferGeometry();
+      particlePositions = new Float32Array(particleCount * 3);
+      particleColors = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        particlePositions[i * 3] = (Math.random() - 0.5) * 850;
+        particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 850;
+        particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 600;
+
+        particleColors[i * 3] = 0.98;
+        particleColors[i * 3 + 1] = 0.55;
+        particleColors[i * 3 + 2] = 0.72;
+      }
+
+      geometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+
+      const pCanvas = document.createElement('canvas');
+      pCanvas.width = 32;
+      pCanvas.height = 32;
+      const pCtx = pCanvas.getContext('2d');
+      const gradient = pCtx.createRadialGradient(16, 16, 0, 16, 16, 16);
+      gradient.addColorStop(0, 'rgba(255,255,255,1)');
+      gradient.addColorStop(0.35, 'rgba(255,255,255,0.7)');
+      gradient.addColorStop(1, 'rgba(255,255,255,0)');
+      pCtx.fillStyle = gradient;
+      pCtx.fillRect(0, 0, 32, 32);
+
+      const pTexture = new THREE.CanvasTexture(pCanvas);
+      const material = new THREE.PointsMaterial({
+        size: 7.5,
+        vertexColors: true,
+        map: pTexture,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+
+      threeParticles = new THREE.Points(geometry, material);
+      threeScene.add(threeParticles);
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX - window.innerWidth / 2) * 0.08;
+        mouseY = (e.clientY - window.innerHeight / 2) * 0.08;
+      });
+
+      window.addEventListener('resize', () => {
+        if (!threeRenderer || !threeCamera) return;
+        threeCamera.aspect = window.innerWidth / window.innerHeight;
+        threeCamera.updateProjectionMatrix();
+        threeRenderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      animateThree();
+    }
+
+    function animateThree() {
+      requestAnimationFrame(animateThree);
+      if (!threeParticles || !threeRenderer) return;
+
+      threeParticles.rotation.y += 0.0008;
+      threeParticles.rotation.x += 0.0004;
+
+      const positions = threeParticles.geometry.attributes.position.array;
+      for (let i = 1; i < positions.length; i += 3) {
+        positions[i] += 0.25;
+        if (positions[i] > 425) positions[i] = -425;
+      }
+      threeParticles.geometry.attributes.position.needsUpdate = true;
+
+      targetCameraX += (mouseX - targetCameraX) * 0.05;
+      targetCameraY += (-mouseY - targetCameraY) * 0.05;
+      threeCamera.position.x = targetCameraX;
+      threeCamera.position.y = targetCameraY;
+      threeCamera.lookAt(threeScene.position);
+
+      threeRenderer.render(threeScene, threeCamera);
+    }
+
+    function updateThreeTheme(theme) {
+      if (!threeParticles || activeThreeTheme === theme) return;
+      activeThreeTheme = theme;
+      const colors = threeParticles.geometry.attributes.color.array;
+      const count = colors.length / 3;
+
+      for (let i = 0; i < count; i++) {
+        if (theme === 'calm') {
+          colors[i * 3] = 0.22;
+          colors[i * 3 + 1] = 0.74;
+          colors[i * 3 + 2] = 0.97;
+        } else {
+          colors[i * 3] = 0.98;
+          colors[i * 3 + 1] = 0.55;
+          colors[i * 3 + 2] = 0.72;
+        }
+      }
+      threeParticles.geometry.attributes.color.needsUpdate = true;
+    }
+
+    // =========================================================================
+    // 3D MOUSE PARALLAX TILT & SPECULAR SHINE ENGINE (FASE 3)
+    // =========================================================================
+    function initMouseParallax() {
+      const cards = document.querySelectorAll('.parallax-card');
+      cards.forEach(card => {
+        let shine = card.querySelector('.parallax-shine');
+        if (!shine) {
+          shine = document.createElement('div');
+          shine.className = 'parallax-shine';
+          card.appendChild(shine);
+        }
+
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+
+          const rotateX = ((y - centerY) / centerY) * -5.0;
+          const rotateY = ((x - centerX) / centerX) * 5.0;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+
+          shine.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.16) 0%, transparent 60%)`;
+          shine.style.opacity = '1';
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+          shine.style.opacity = '0';
+        });
+      });
+    }
+
+    // =========================================================================
+    // GROUNDING 5-4-3-2-1 INTERACTIVE WIZARD (FASE 3 SPRINT 3.2)
+    // =========================================================================
+    const GROUNDING_DATA = [
+      { step: 1, name: 'Penglihatan', count: 5, inst: 'Sebutkan atau perhatikan 5 benda yang kamu LIHAT di sekitarmu saat ini.', badge: 'Target: 5 Benda', items: ['Layar monitor atau ponsel', 'Buku atau catatan di meja', 'Warna cat dinding / plafon', 'Bentuk jendela atau tirai', 'Bayangan cahaya lampu'] },
+      { step: 2, name: 'Sentuhan', count: 4, inst: 'Rasakan 4 tekstur fisik yang bisa disentuh tubuhmu.', badge: 'Target: 4 Tekstur', items: ['Kain pakaian yang kamu kenakan', 'Telapak kaki menyentuh lantai', 'Permukaan meja yang kokoh', 'Hembusan angin sepoi di kulit'] },
+      { step: 3, name: 'Pendengaran', count: 3, inst: 'Dengarkan dengan saksama 3 suara berbeda di sekelilingmu.', badge: 'Target: 3 Suara', items: ['Dengungan halus pendingin / kipas', 'Suara kendaraan atau aktivitas jauh', 'Deru hembusan napasmu sendiri'] },
+      { step: 4, name: 'Penciuman', count: 2, inst: 'Tarik napas perlahan dan sadari 2 aroma di ruangan ini.', badge: 'Target: 2 Aroma', items: ['Wangi minuman kopi/teh atau sabun', 'Sensasi udara segar di ruangan'] },
+      { step: 5, name: 'Pengecapan / Sensasi', count: 1, inst: 'Sadarilah 1 rasa atau sensasi syukur yang hadir saat ini.', badge: 'Target: 1 Hal Nyata', items: ['Rasa lega bahwa saat ini kamu aman dan bernapas dengan tenang'] },
+    ];
+
+    let currentGroundingIndex = 0;
+
+    function renderGroundingStep() {
+      const cur = GROUNDING_DATA[currentGroundingIndex];
+      const stepLabel = document.getElementById('grounding-step-label');
+      const badge = document.getElementById('grounding-status-badge');
+      const progBar = document.getElementById('grounding-prog-bar');
+      const instText = document.getElementById('grounding-inst-text');
+      const checklist = document.getElementById('grounding-checklist');
+      const nextBtn = document.getElementById('btn-grounding-next');
+
+      if (!stepLabel || !cur) return;
+
+      stepLabel.innerText = `Langkah ${cur.step} dari 5: ${cur.name}`;
+      badge.innerText = cur.badge;
+      progBar.style.width = `${(cur.step / 5) * 100}%`;
+      instText.innerText = cur.inst;
+
+      checklist.innerHTML = '';
+      cur.items.forEach((itemText, i) => {
+        const row = document.createElement('label');
+        row.style.cssText = 'display:flex; align-items:center; gap:8px; font-size:0.78rem; color:#cbd5e1; cursor:pointer; background:rgba(255,255,255,0.02); padding:6px 10px; border-radius:8px;';
+        row.innerHTML = `
+          <input type="checkbox" style="accent-color:var(--accent-cyan); width:15px; height:15px;" onchange="this.parentElement.style.opacity = this.checked ? '0.5' : '1'">
+          <span>${itemText}</span>
+        `;
+        checklist.appendChild(row);
+      });
+
+      if (currentGroundingIndex === GROUNDING_DATA.length - 1) {
+        nextBtn.innerText = 'Selesai Latihan Grounding 🎉';
+      } else {
+        nextBtn.innerText = 'Lanjut Langkah Berikutnya ➜';
+      }
+    }
+
+    function lanjutGroundingStep() {
+      playTibetanChime(432 + (currentGroundingIndex >= 0 ? currentGroundingIndex * 35 : 0), 1.8);
+      if (currentGroundingIndex < GROUNDING_DATA.length - 1 && currentGroundingIndex >= 0) {
+        currentGroundingIndex++;
+        renderGroundingStep();
+      } else {
+        document.getElementById('grounding-inst-text').innerHTML = '🌿 <strong>Luar biasa.</strong> Kamu telah berhasil menghubungkan kembali pikiranmu dengan realitas fisik saat ini. Napasmu kini lebih teratur dan tubuhmu lebih tenang.';
+        document.getElementById('grounding-checklist').innerHTML = '';
+        document.getElementById('grounding-status-badge').innerText = 'Selesai 100%';
+        document.getElementById('btn-grounding-next').innerText = 'Ulangi Grounding 🔄';
+        currentGroundingIndex = -1;
+      }
+    }
+
+    function resetGroundingWizard() {
+      currentGroundingIndex = 0;
+      renderGroundingStep();
+    }
+
+    // =========================================================================
+    // CERMIN POSTUR & CAHAYA (VISION SUpportive FRAMEWORK - ZERO-BIOMETRICS)
+    // =========================================================================
+    let visionStream = null;
+    let visionTimer = null;
+
+    async function toggleVisionCam() {
+      const consentCheck = document.getElementById('consent-ekspresi');
+      const isAllowed = consentCheck && consentCheck.checked;
+
+      if (!isAllowed) {
+        bukaModal('modal-privasi');
+        alert('Demi privasi Anda, mohon centang izin "Cermin Postur & Pencahayaan (Vision)" terlebih dahulu di menu Pengaturan Privasi.');
+        return;
+      }
+
+      const camBox = document.getElementById('vision-cam-box');
+      const videoEl = document.getElementById('webcam-video');
+      const btn = document.getElementById('btn-cam-toggle');
+
+      if (visionStream) {
+        stopVisionCam();
+        return;
+      }
+
+      try {
+        visionStream = await navigator.mediaDevices.getUserMedia({
+          video: { width: 320, height: 240, facingMode: 'user' },
+          audio: false
+        });
+        videoEl.srcObject = visionStream;
+        camBox.style.display = 'block';
+        btn.innerText = '⏹️ Matikan Cermin';
+        btn.style.borderColor = '#ef4444';
+        btn.style.color = '#f87171';
+
+        visionTimer = setInterval(analisisProksiLingkungan, 6000);
+        setTimeout(analisisProksiLingkungan, 1200);
+      } catch (err) {
+        alert('Tidak dapat mengakses kamera web lokal: ' + err.message);
+      }
+    }
+
+    function stopVisionCam() {
+      if (visionStream) {
+        visionStream.getTracks().forEach(track => track.stop());
+        visionStream = null;
+      }
+      if (visionTimer) {
+        clearInterval(visionTimer);
+        visionTimer = null;
+      }
+      const camBox = document.getElementById('vision-cam-box');
+      const btn = document.getElementById('btn-cam-toggle');
+      if (camBox) camBox.style.display = 'none';
+      if (btn) {
+        btn.innerText = '📹 Cermin Postur & Cahaya';
+        btn.style.borderColor = 'rgba(56,189,248,0.3)';
+        btn.style.color = 'var(--accent-cyan)';
+      }
+    }
+
+    async function analisisProksiLingkungan() {
+      if (!visionStream) return;
+      const videoEl = document.getElementById('webcam-video');
+      const canvas = document.getElementById('vision-calc-canvas');
+      const fbText = document.getElementById('vision-feedback-text');
+      if (!videoEl || !canvas || videoEl.videoWidth === 0) return;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+      let totalLuma = 0;
+      for (let i = 0; i < data.length; i += 4) {
+        totalLuma += (data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+      }
+      const avgBrightness = totalLuma / (canvas.width * canvas.height * 255);
+
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/vision`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: sessionId,
+            kecerahan: avgBrightness,
+            indikator_postur: 'netral',
+            eskalasi: 'HIJAU'
+          })
+        });
+        if (res.ok) {
+          const evalRes = await res.json();
+          if (evalRes.status_kamera === 'dimatikan_hard_gate') {
+            stopVisionCam();
+          } else if (evalRes.saran_kenyamanan) {
+            fbText.innerText = '💡 ' + evalRes.saran_kenyamanan;
+          }
+        }
+      } catch (err) {}
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      muatConsent();
+      initThreeCyberzen();
+      initMouseParallax();
+      renderGroundingStep();
+    });
   </script>
 </body>
 </html>

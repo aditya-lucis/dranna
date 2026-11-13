@@ -10,6 +10,7 @@ class ConsentData(BaseModel):
     izin_psikoedukasi: bool = True
     izin_simpan_riwayat: bool = True
     izin_analisis_mood: bool = True
+    izin_analisis_ekspresi: bool = False  # Default OFF: Strict Consent-First
     durasi_simpan_hari: int = Field(default=90, ge=1, le=365)
     topik_sensitif_diizinkan: list[str] = Field(default_factory=list)
 
@@ -37,6 +38,7 @@ class ConsentRepository:
                 izin_psikoedukasi=bool(row["izin_psikoedukasi"]),
                 izin_simpan_riwayat=bool(row["izin_simpan_riwayat"]),
                 izin_analisis_mood=bool(row["izin_analisis_mood"]),
+                izin_analisis_ekspresi=bool(row["izin_analisis_ekspresi"]) if "izin_analisis_ekspresi" in row.keys() else False,
                 durasi_simpan_hari=row["durasi_simpan_hari"],
                 topik_sensitif_diizinkan=json.loads(row["topik_sensitif_diizinkan"] or "[]"),
             )
@@ -49,13 +51,15 @@ class ConsentRepository:
                 """
                 INSERT INTO consent_ledger (
                     user_id, izin_psikoedukasi, izin_simpan_riwayat, 
-                    izin_analisis_mood, durasi_simpan_hari, topik_sensitif_diizinkan,
+                    izin_analisis_mood, izin_analisis_ekspresi,
+                    durasi_simpan_hari, topik_sensitif_diizinkan,
                     diperbarui_pada
-                ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
                 ON CONFLICT(user_id) DO UPDATE SET
                     izin_psikoedukasi = excluded.izin_psikoedukasi,
                     izin_simpan_riwayat = excluded.izin_simpan_riwayat,
                     izin_analisis_mood = excluded.izin_analisis_mood,
+                    izin_analisis_ekspresi = excluded.izin_analisis_ekspresi,
                     durasi_simpan_hari = excluded.durasi_simpan_hari,
                     topik_sensitif_diizinkan = excluded.topik_sensitif_diizinkan,
                     diperbarui_pada = CURRENT_TIMESTAMP
@@ -65,6 +69,7 @@ class ConsentRepository:
                     int(data.izin_psikoedukasi),
                     int(data.izin_simpan_riwayat),
                     int(data.izin_analisis_mood),
+                    int(data.izin_analisis_ekspresi),
                     data.durasi_simpan_hari,
                     topik_json,
                 ),
