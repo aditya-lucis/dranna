@@ -44,6 +44,18 @@ async def stream_companion(
     )
     await asyncio.sleep(0.005)
 
+    # Injeksi memori episodik lampau (jika diizinkan oleh Consent Ledger)
+    ringkasan_lampau = ""
+    try:
+        from anna.src.storage.consent_repo import ConsentRepository
+        from anna.src.storage.episodic_repo import EpisodicRepository
+        c_repo = ConsentRepository()
+        if c_repo.dapatkan_consent(sesi_id).izin_simpan_riwayat:
+            ep_repo = EpisodicRepository()
+            ringkasan_lampau = ep_repo.bangun_konteks_ringkasan(sesi_id)
+    except Exception:
+        ringkasan_lampau = ""
+
     input_state: CompanionState = {
         "messages": [HumanMessage(content=pesan_pengguna)],
         "sesi_id": sesi_id,
@@ -51,6 +63,7 @@ async def stream_companion(
         "persona": persona,
         "jam": jam,
         "item9_flag": item9_flag,
+        "ringkasan_memori": ringkasan_lampau,
         "metadata": {"sesi_id": sesi_id, "geo": geo},
     }
 

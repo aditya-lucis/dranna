@@ -48,3 +48,10 @@ htmlcov/
 
 # Logs
 *.log
+
+# Databases & local persistent storage
+*.db
+*.db-wal
+*.db-shm
+data/
+anna/data/

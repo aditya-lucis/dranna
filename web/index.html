@@ -778,6 +778,170 @@
       from { transform: scale(0.95); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
+
+    /* Continuity & Privacy Elements (Fase 2) */
+    .badge-continuity {
+      font-size: 0.72rem;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #7dd3fc;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .switch-info { font-size: 0.82rem; }
+    .switch-title { font-weight: 600; color: #fff; margin-bottom: 2px; }
+    .switch-desc { font-size: 0.72rem; color: var(--text-dim); }
+    .switch-input {
+      position: relative;
+      width: 42px;
+      height: 24px;
+      -webkit-appearance: none;
+      background: #334155;
+      outline: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.25s;
+    }
+    .switch-input:checked { background: var(--primary); }
+    .switch-input::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 18px;
+      height: 18px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.25s;
+    }
+    .switch-input:checked::before { transform: translateX(18px); }
+    .btn-danger-rtbf {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+      font-weight: 700;
+      padding: 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.84rem;
+    }
+    .btn-danger-rtbf:hover {
+      background: rgba(239, 68, 68, 0.35);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Mood Timeline & Chart Styles (Fase 2) */
+    .mood-chart-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .mood-chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.76rem;
+      margin-bottom: 8px;
+    }
+    .mood-trend-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .badge-trend-good { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-trend-flatline { background: rgba(239, 68, 68, 0.18); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .badge-trend-stable { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .recent-entry-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 8px;
+      font-size: 0.76rem;
+    }
+
+    /* Skrining Card & Scale Buttons (Fase 2) */
+    .skrining-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .scale-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .scale-opt-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: #e2e8f0;
+      font-size: 0.78rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .scale-opt-btn:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--primary);
+      color: #fff;
+      transform: translateX(3px);
+    }
+    .scale-opt-btn strong {
+      color: var(--accent-warm);
+      display: inline-block;
+      width: 18px;
+    }
+
+    /* Safety Plan Styles (Fase 2) */
+    .safety-pillar-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .safety-pillar-title {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--accent-warm);
+      margin-bottom: 4px;
+    }
+    @keyframes auraPulse {
+      0% { box-shadow: 0 0 30px rgba(244, 63, 94, 0.2); }
+      50% { box-shadow: 0 0 50px rgba(244, 63, 94, 0.38); }
+      100% { box-shadow: 0 0 30px rgba(244, 63, 94, 0.2); }
+    }
+    .portrait-wrap {
+      animation: auraPulse 6s ease-in-out infinite;
+    }
+    .portrait-wrap.calm-mode {
+      animation: none;
+      box-shadow: 0 0 45px rgba(56, 189, 248, 0.35) !important;
+      border-color: rgba(56, 189, 248, 0.4) !important;
+    }
   </style>
 </head>
 <body>
@@ -802,9 +966,18 @@
     </div>
 
     <div class="header-actions">
+      <div class="badge-continuity" title="Penyimpanan lokal SQLite WAL aktif">💾 SQLite WAL • Zero-PII</div>
+      <button class="btn-pill" id="soundscape-btn" onclick="toggleZenSoundscape()" title="Suara Alam / Zen Ambience">
+        <span id="soundscape-icon">🌧️</span>
+        <span id="soundscape-text">Zen Audio: OFF</span>
+      </button>
       <button class="btn-pill" id="tts-btn" onclick="toggleTTS()">
         <span id="tts-icon">🔊</span>
         <span id="tts-text">Suara: ON</span>
+      </button>
+      <button class="btn-pill" onclick="bukaModal('modal-privasi')">
+        <span>🔒</span>
+        <span>Privasi</span>
       </button>
       <button class="btn-pill" onclick="bukaModal('modal-disclaimer')">
         <span>⚖️</span>
@@ -939,8 +1112,10 @@
     <section class="glass-card col-tools">
       <div class="tools-nav">
         <button class="tool-tab-btn active" onclick="switchToolTab('pane-breath', this)">🌬️ 4-7-8</button>
-        <button class="tool-tab-btn" onclick="switchToolTab('pane-grounding', this)">🌿 5-4-3-2-1</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-grounding', this)">🌿 5-4-3</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-journal', this)">📖 Jurnal</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-skrining', this)">📝 Skrining</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-safety', this)">🛡️ Plan</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-info', this)">📊 Sistem</button>
       </div>
 
@@ -1009,15 +1184,31 @@
         </div>
       </div>
 
-      <!-- Tab 3: Mood Journal -->
+      <!-- Tab 3: Mood Journal & Flatline Detector -->
       <div id="pane-journal" class="tool-pane">
+        <!-- Mini Chart & Trend Header -->
+        <div class="mood-chart-box">
+          <div class="mood-chart-header">
+            <span><strong>Tren 7 Hari</strong> (Valensi & Energi)</span>
+            <div id="mood-trend-badge" class="mood-trend-badge badge-trend-stable">🌿 Belum ada data</div>
+          </div>
+          <div id="mood-chart-container" style="height:85px; position:relative;">
+            <!-- SVG rendered dynamically -->
+            <svg id="mood-svg" width="100%" height="85" style="overflow:visible;"></svg>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-dim); margin-top:4px;">
+            <span>Pink: Valensi (-1 s/d +1)</span>
+            <span>Biru: Energi (0-100%)</span>
+          </div>
+        </div>
+
         <form class="journal-form" onsubmit="saveJournal(event)">
           <div class="slider-group">
             <div class="slider-header">
               <span>Valensi Emosi (Mood)</span>
               <span class="slider-val" id="valence-val">+0.5</span>
             </div>
-            <input type="range" min="-1" max="1" step="0.1" value="0.5" oninput="document.getElementById('valence-val').innerText = (this.value > 0 ? '+' : '') + this.value">
+            <input type="range" id="input-valence" min="-1" max="1" step="0.1" value="0.5" oninput="document.getElementById('valence-val').innerText = (this.value > 0 ? '+' : '') + this.value">
           </div>
 
           <div class="slider-group">
@@ -1025,22 +1216,143 @@
               <span>Tingkat Energi Fisik</span>
               <span class="slider-val" id="energy-val">70%</span>
             </div>
-            <input type="range" min="0" max="100" step="5" value="70" oninput="document.getElementById('energy-val').innerText = this.value + '%'">
+            <input type="range" id="input-energy" min="0" max="100" step="5" value="70" oninput="document.getElementById('energy-val').innerText = this.value + '%'">
           </div>
 
           <div>
-            <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:6px;">Gratitude Log (Hal yang Disyukuri):</label>
-            <textarea class="journal-textarea" rows="4" placeholder="Sebutkan 1 hal sederhana yang patut kamu syukuri hari ini..."></textarea>
+            <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:4px;">Catatan Refleksi Emosi:</label>
+            <textarea id="input-refleksi" class="journal-textarea" rows="2" placeholder="Bagaimana pikiran dan tubuhmu hari ini..."></textarea>
           </div>
 
-          <button type="submit" class="btn-action-breath" style="width:100%; border-radius:14px;">
+          <div style="margin-top:6px;">
+            <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:4px;">Gratitude Log (Hal yang Disyukuri):</label>
+            <textarea id="input-gratitude" class="journal-textarea" rows="2" placeholder="Sebutkan hal kecil yang kamu syukuri hari ini..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-action-breath" style="width:100%; border-radius:14px; margin-top:8px;">
             Simpan ke Jurnal Lokal
           </button>
-          <div id="journal-alert" style="font-size:0.75rem; color:#10b981; text-align:center;"></div>
+          <div id="journal-alert" style="font-size:0.75rem; color:#10b981; text-align:center; margin-top:6px;"></div>
+        </form>
+
+        <!-- Riwayat Singkat -->
+        <div id="recent-journal-list" style="margin-top:14px;"></div>
+      </div>
+
+      <!-- Tab 4: Skrining Interaktif PHQ-9 & GAD-7 (Fase 2) -->
+      <div id="pane-skrining" class="tool-pane">
+        <!-- Switcher PHQ9 / GAD7 -->
+        <div style="display:flex; gap:6px; margin-bottom:12px;">
+          <button id="btn-mode-phq9" class="pose-btn active" style="flex:1;" onclick="mulaiAsesmen('phq9')">PHQ-9 (Depresi)</button>
+          <button id="btn-mode-gad7" class="pose-btn" style="flex:1;" onclick="mulaiAsesmen('gad7')">GAD-7 (Cemas)</button>
+        </div>
+
+        <div id="skrining-card" class="skrining-card">
+          <!-- Step indicator & progress bar -->
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">
+            <span id="skrining-step-text">Pertanyaan 1 dari 9</span>
+            <span id="skrining-kategori-text">Anhedonia</span>
+          </div>
+          <div style="background:rgba(255,255,255,0.08); height:4px; border-radius:999px; overflow:hidden; margin-bottom:14px;">
+            <div id="skrining-prog-bar" style="background:var(--primary); height:100%; width:11%; transition:width 0.25s;"></div>
+          </div>
+
+          <!-- Question prompt -->
+          <p id="skrining-pertanyaan" style="font-size:0.86rem; font-weight:600; color:#fff; line-height:1.5; min-height:48px; margin-bottom:14px;">
+            Kurang berminat atau tidak ada kesenangan dalam melakukan kegiatan.
+          </p>
+
+          <!-- 4 Answer Option Buttons -->
+          <div class="scale-btn-group" id="scale-buttons">
+            <button class="scale-opt-btn" onclick="pilihSkala(0)">
+              <strong>0</strong> • Tidak sama sekali
+            </button>
+            <button class="scale-opt-btn" onclick="pilihSkala(1)">
+              <strong>1</strong> • Beberapa hari
+            </button>
+            <button class="scale-opt-btn" onclick="pilihSkala(2)">
+              <strong>2</strong> • > separuh waktu
+            </button>
+            <button class="scale-opt-btn" onclick="pilihSkala(3)">
+              <strong>3</strong> • Hampir setiap hari
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Box (Hidden until done) -->
+        <div id="skrining-hasil-box" style="display:none; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:16px; padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h3 id="hasil-judul" style="font-size:0.95rem; color:#fff;">Hasil Evaluasi PHQ-9</h3>
+            <span id="hasil-badge" class="mood-trend-badge badge-trend-good">Skor: 0</span>
+          </div>
+          <div id="hasil-kategori" style="font-size:0.85rem; font-weight:700; color:var(--accent-warm); margin-bottom:6px;">Tingkat Minimal</div>
+          <p id="hasil-deskripsi" style="font-size:0.75rem; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">
+            Pola suasana hati Anda berada dalam batas fluktuasi normal.
+          </p>
+          <div style="font-size:0.7rem; color:var(--text-dim); border-top:1px solid var(--border-subtle); padding-top:8px; margin-bottom:12px;">
+            *Disclaimer: Hasil ini adalah gambaran penilaian mandiri, bukan diagnosis klinis.
+          </div>
+          <button class="pose-btn" style="width:100%;" onclick="resetAsesmen()">
+            Ulangi Skrining
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 5: Safety Plan Stanley-Brown (Fase 2) -->
+      <div id="pane-safety" class="tool-pane">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div>
+            <h3 style="font-size:0.92rem; color:#fff;">🛡️ Safety Plan Pribadi</h3>
+            <div style="font-size:0.68rem; color:var(--text-dim);">Stanley-Brown Safety Planning Model</div>
+          </div>
+          <button class="pose-btn" style="padding:6px 10px; font-size:0.72rem;" onclick="cetakSafetyPlan()">
+            🖨️ Cetak Kartu
+          </button>
+        </div>
+
+        <form id="form-safety-plan" onsubmit="simpanSafetyPlan(event)">
+          <!-- Pillar 1: Tanda Bahaya -->
+          <div class="safety-pillar-card">
+            <div class="safety-pillar-title">1. Tanda Bahaya Pribadi (Warning Signs)</div>
+            <textarea id="sp-tanda" class="journal-textarea" rows="2" placeholder="Pikiran, perasaan, atau perilaku saat situasi mulai berat (1 per baris)..."></textarea>
+          </div>
+
+          <!-- Pillar 2: Strategi Koping Mandiri -->
+          <div class="safety-pillar-card">
+            <div class="safety-pillar-title">2. Koping Internal Mandiri</div>
+            <textarea id="sp-koping" class="journal-textarea" rows="2" placeholder="Hal menenangkan yang bisa dilakukan sendiri (napas, cuci muka air dingin, musik)..."></textarea>
+          </div>
+
+          <!-- Pillar 3: Kontak Personal -->
+          <div class="safety-pillar-card">
+            <div class="safety-pillar-title">3. Kontak Dukungan Personal & Keluarga</div>
+            <textarea id="sp-personal" class="journal-textarea" rows="2" placeholder="Nama & nomor teman/sahabat/keluarga terpercaya..."></textarea>
+          </div>
+
+          <!-- Pillar 4: Kontak Profesional & Hotline -->
+          <div class="safety-pillar-card">
+            <div class="safety-pillar-title">4. Kontak Profesional & Bantuan Darurat</div>
+            <div id="sp-prof-list" style="font-size:0.72rem; color:var(--text-muted); line-height:1.5; margin-bottom:4px;">
+              • 119 Ext 8: Sejiwa Kemenkes RI (24 Jam Bebas Pulsa)<br>
+              • 112: Panggilan Darurat Terpadu<br>
+              • IGD Rumah Sakit Terdekat
+            </div>
+          </div>
+
+          <!-- Pillar 5: Lingkungan Aman -->
+          <div class="safety-pillar-card">
+            <div class="safety-pillar-title">5. Menjaga Lingkungan Tetap Aman</div>
+            <textarea id="sp-lingkungan" class="journal-textarea" rows="2" placeholder="Langkah menjauhkan pemicu atau benda berbahaya..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-action-breath" style="width:100%; border-radius:14px; margin-top:6px;">
+            Simpan Rencana Keselamatan
+          </button>
+          <div id="sp-alert" style="font-size:0.75rem; color:#10b981; text-align:center; margin-top:6px;"></div>
         </form>
       </div>
 
-      <!-- Tab 4: Sistem & Info -->
+      <!-- Tab 6: Sistem & Info -->
       <div id="pane-info" class="tool-pane">
         <div style="display:flex; flex-direction:column; gap:10px; font-size:0.8rem;">
           <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:10px 14px; border-radius:12px; display:flex; justify-content:space-between;">
@@ -1115,6 +1427,61 @@
     </div>
   </div>
 
+  <!-- Modal Privasi & Consent Ledger (Fase 2) -->
+  <div id="modal-privasi" class="modal-backdrop" onclick="closeModal(event, 'modal-privasi')">
+    <div class="modal-box" style="border-color:rgba(56, 189, 248, 0.4); max-width:520px;">
+      <h2 style="font-size:1.25rem; color:#fff; margin-bottom:6px; display:flex; align-items:center; gap:8px;">
+        <span>🔒</span> Kendali Privasi & Consent
+      </h2>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:16px;">
+        Data percakapan diproses di perangkat lokal dengan standar Zero-PII (nama, NIK, alamat disensor otomatis). Anda memiliki kendali penuh atas data Anda.
+      </p>
+
+      <div style="margin-bottom:18px;">
+        <div class="switch-row">
+          <div class="switch-info">
+            <div class="switch-title">Izin Psikoedukasi Terpadu</div>
+            <div class="switch-desc">Mengizinkan Anna mengambil materi rujukan klinis terpercaya.</div>
+          </div>
+          <input type="checkbox" id="consent-psiko" class="switch-input" checked onchange="simpanConsent()">
+        </div>
+
+        <div class="switch-row">
+          <div class="switch-info">
+            <div class="switch-title">Simpan Memori Sesi</div>
+            <div class="switch-desc">Menjaga kontinuitas benang merah saat Anda kembali mengobrol.</div>
+          </div>
+          <input type="checkbox" id="consent-riwayat" class="switch-input" checked onchange="simpanConsent()">
+        </div>
+
+        <div class="switch-row">
+          <div class="switch-info">
+            <div class="switch-title">Analisis Tren Mood Harian</div>
+            <div class="switch-desc">Mendeteksi perkembangan emosi dan tanda flatline &ge; 7 hari.</div>
+          </div>
+          <input type="checkbox" id="consent-mood" class="switch-input" checked onchange="simpanConsent()">
+        </div>
+      </div>
+
+      <!-- Right to be Forgotten (RTBF) -->
+      <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); border-radius:16px; padding:14px; margin-bottom:16px;">
+        <div style="font-size:0.86rem; font-weight:700; color:#f87171; margin-bottom:4px;">
+          Hak Penghapusan Total (Right to be Forgotten)
+        </div>
+        <p style="font-size:0.74rem; color:#fca5a5; margin-bottom:12px; line-height:1.4;">
+          Menghapus seluruh riwayat percakapan, memori episodik, catatan jurnal, dan asesmen secara permanen dari basis data.
+        </p>
+        <button class="btn-danger-rtbf" onclick="konfirmasiHapusData()">
+          🗑️ Lupakan Seluruh Data Saya
+        </button>
+      </div>
+
+      <button class="pose-btn" style="width:100%;" onclick="document.getElementById('modal-privasi').style.display='none'">
+        Selesai & Tutup
+      </button>
+    </div>
+  </div>
+
   <!-- SCRIPT LOGIKA APLIKASI -->
   <script>
     const POSE_GLASSES = '/assets/img/01134ab7-5052-4e91-9d6a-7753694fe140.webp';
@@ -1142,6 +1509,7 @@
     function setAvatarState(state) {
       const el = document.getElementById('status-desc-text');
       const viz = document.getElementById('visualizer');
+      const portrait = document.querySelector('.portrait-wrap');
       const map = {
         'siap': 'Hadir Mendengarkanmu',
         'mendengarkan': 'Mendengarkan Ceritamu...',
@@ -1150,6 +1518,10 @@
         'tenang': 'Menemanimu dalam Tenang...',
       };
       el.innerText = map[state] || state;
+
+      if (portrait) {
+        portrait.classList.toggle('calm-mode', state === 'tenang');
+      }
 
       if (state === 'menulis') {
         viz.classList.add('speaking');
@@ -1316,6 +1688,15 @@
       document.querySelectorAll('.tool-pane').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById(paneId).classList.add('active');
+      if (paneId === 'pane-journal') {
+        muatJurnal();
+      } else if (paneId === 'pane-skrining') {
+        if (!asesmenPaket || asesmenPaket.jenis !== currentAsesmenJenis) {
+          mulaiAsesmen(currentAsesmenJenis || 'phq9');
+        }
+      } else if (paneId === 'pane-safety') {
+        muatSafetyPlan();
+      }
     }
 
     // Pernapasan 4-7-8 Engine
@@ -1361,12 +1742,268 @@
       }, 1000);
     }
 
-    // Simpan Jurnal
-    function saveJournal(e) {
+    // Simpan Jurnal & Deteksi Flatline (Fase 2)
+    async function saveJournal(e) {
       e.preventDefault();
-      const alert = document.getElementById('journal-alert');
-      alert.innerText = '✓ Entri jurnal berhasil disimpan secara aman di perangkat lokal!';
-      setTimeout(() => alert.innerText = '', 3500);
+      const valence = parseFloat(document.getElementById('input-valence').value);
+      const energy = parseFloat(document.getElementById('input-energy').value) / 100.0;
+      const refleksi = document.getElementById('input-refleksi').value.trim();
+      const gratitudeRaw = document.getElementById('input-gratitude').value.trim();
+      const gratitude = gratitudeRaw ? [gratitudeRaw] : [];
+
+      const payload = {
+        id: 'mood-' + Math.random().toString(36).substring(2, 10),
+        waktu_iso: new Date().toISOString(),
+        mood_skor: valence,
+        energi_skor: energy,
+        catatan_refleksi: refleksi,
+        hal_yang_disyukuri: gratitude,
+      };
+
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/journal`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const alertEl = document.getElementById('journal-alert');
+        if (res.ok) {
+          alertEl.style.color = '#10b981';
+          alertEl.innerText = '✓ Catatan mood berhasil disimpan ke basis data SQLite WAL!';
+          document.getElementById('input-refleksi').value = '';
+          document.getElementById('input-gratitude').value = '';
+          muatJurnal();
+        } else {
+          alertEl.style.color = '#f87171';
+          alertEl.innerText = 'Gagal menyimpan catatan mood.';
+        }
+        setTimeout(() => alertEl.innerText = '', 3500);
+      } catch (err) {
+        const alertEl = document.getElementById('journal-alert');
+        alertEl.style.color = '#f87171';
+        alertEl.innerText = 'Terjadi kendala koneksi ke server.';
+        setTimeout(() => alertEl.innerText = '', 3500);
+      }
+    }
+
+    // Muat & Render Grafik Mood SVG
+    async function muatJurnal() {
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/journal`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const riwayat = data.riwayat || [];
+        const analisis = data.analisis || {};
+
+        // 1. Update Trend Badge
+        const badgeEl = document.getElementById('mood-trend-badge');
+        if (analisis.flatline_terdeteksi) {
+          badgeEl.className = 'mood-trend-badge badge-trend-flatline';
+          badgeEl.innerText = '⚠️ Flatline ≥ 7 Hari';
+          badgeEl.title = analisis.pesan_evaluasi;
+        } else if (analisis.tren === 'meningkat') {
+          badgeEl.className = 'mood-trend-badge badge-trend-good';
+          badgeEl.innerText = '📈 Tren Membaik';
+        } else if (riwayat.length > 0) {
+          badgeEl.className = 'mood-trend-badge badge-trend-stable';
+          badgeEl.innerText = `🌿 Rata-rata ${analisis.rata_rata_mood > 0 ? '+' : ''}${analisis.rata_rata_mood}`;
+        } else {
+          badgeEl.className = 'mood-trend-badge badge-trend-stable';
+          badgeEl.innerText = '🌿 Belum ada data';
+        }
+
+        // 2. Render SVG Sparkline
+        renderMoodSvg(riwayat);
+
+        // 3. Render Daftar Entri Terbaru
+        const listEl = document.getElementById('recent-journal-list');
+        if (riwayat.length === 0) {
+          listEl.innerHTML = '<p style="font-size:0.72rem; color:var(--text-dim); text-align:center;">Belum ada entri catatan.</p>';
+          return;
+        }
+        const recent = riwayat.slice(-3).reverse();
+        listEl.innerHTML = '<div style="font-size:0.75rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Entri Terkini:</div>' +
+          recent.map(r => {
+            const dateStr = new Date(r.waktu_iso).toLocaleDateString([], { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+            const mSign = r.mood_skor > 0 ? '+' : '';
+            const gratText = r.hal_yang_disyukuri && r.hal_yang_disyukuri.length ? `• Syukur: ${r.hal_yang_disyukuri.join(', ')}` : '';
+            return `
+              <div class="recent-entry-item">
+                <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                  <strong style="color:#fff;">${dateStr}</strong>
+                  <span style="color:${r.mood_skor >= 0 ? '#34d399' : '#f87171'}; font-weight:700;">Mood: ${mSign}${r.mood_skor}</span>
+                </div>
+                <div style="color:var(--text-muted); font-size:0.72rem;">${r.catatan_refleksi || 'Tanpa catatan refleksi'}</div>
+                ${gratText ? `<div style="color:#7dd3fc; font-size:0.7rem; margin-top:2px;">${gratText}</div>` : ''}
+              </div>
+            `;
+          }).join('');
+      } catch (err) {}
+    }
+
+    function renderMoodSvg(riwayat) {
+      const svg = document.getElementById('mood-svg');
+      if (!svg) return;
+      if (!riwayat || riwayat.length === 0) {
+        svg.innerHTML = `
+          <line x1="0" y1="42.5" x2="100%" y2="42.5" stroke="rgba(255,255,255,0.08)" stroke-dasharray="4,4" />
+          <text x="50%" y="46" fill="#64748b" font-size="11" text-anchor="middle">Buat catatan harian pertamamu di bawah!</text>
+        `;
+        return;
+      }
+
+      const W = svg.clientWidth || 240;
+      const H = 85;
+      const padding = 14;
+      const pts = riwayat.slice(-7);
+      const step = pts.length > 1 ? (W - padding * 2) / (pts.length - 1) : 0;
+
+      // Zero baseline for valence at Y=42.5
+      let html = `<line x1="0" y1="${H/2}" x2="${W}" y2="${H/2}" stroke="rgba(255,255,255,0.12)" stroke-dasharray="3,3" />`;
+
+      const valenceCoords = [];
+      const energyCoords = [];
+
+      pts.forEach((p, idx) => {
+        const x = padding + idx * step;
+        // Valence: -1.0 -> H - padding, +1.0 -> padding
+        const yVal = (H / 2) - (p.mood_skor * (H / 2 - padding));
+        // Energy: 0.0 -> H - padding, 1.0 -> padding
+        const yEne = (H - padding) - (p.energi_skor * (H - padding * 2));
+        valenceCoords.push(`${x},${yVal}`);
+        energyCoords.push(`${x},${yEne}`);
+      });
+
+      // Draw Energy Line (Cyan dashed)
+      if (energyCoords.length > 1) {
+        html += `<polyline points="${energyCoords.join(' ')}" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="4,3" opacity="0.75" />`;
+      }
+      // Draw Valence Line (Pink solid)
+      if (valenceCoords.length > 1) {
+        html += `<polyline points="${valenceCoords.join(' ')}" fill="none" stroke="#f43f5e" stroke-width="2.5" />`;
+      }
+
+      // Draw Points
+      pts.forEach((p, idx) => {
+        const x = padding + idx * step;
+        const yVal = (H / 2) - (p.mood_skor * (H / 2 - padding));
+        html += `<circle cx="${x}" cy="${yVal}" r="4" fill="#f43f5e" stroke="#fff" stroke-width="1.5"><title>Mood: ${p.mood_skor}</title></circle>`;
+      });
+
+      svg.innerHTML = html;
+    }
+
+    // =====================================================================
+    // SKRINING KLINIS INTERAKTIF PHQ-9 & GAD-7 (FASE 2 SPRINT 2.3)
+    // =====================================================================
+    let currentAsesmenJenis = 'phq9';
+    let asesmenPaket = null;
+    let currentQIdx = 0;
+    let jawabanAsesmen = [];
+
+    async function mulaiAsesmen(jenis) {
+      currentAsesmenJenis = jenis;
+      currentQIdx = 0;
+      jawabanAsesmen = [];
+
+      document.getElementById('btn-mode-phq9').classList.toggle('active', jenis === 'phq9');
+      document.getElementById('btn-mode-gad7').classList.toggle('active', jenis === 'gad7');
+
+      document.getElementById('skrining-card').style.display = 'block';
+      document.getElementById('skrining-hasil-box').style.display = 'none';
+
+      try {
+        const res = await fetch(`/api/v1/asesmen/pertanyaan/${jenis}`);
+        if (res.ok) {
+          asesmenPaket = await res.json();
+          tampilkanPertanyaan();
+        }
+      } catch (err) {}
+    }
+
+    function tampilkanPertanyaan() {
+      if (!asesmenPaket || !asesmenPaket.pertanyaan) return;
+      const total = asesmenPaket.pertanyaan.length;
+      const q = asesmenPaket.pertanyaan[currentQIdx];
+
+      document.getElementById('skrining-step-text').innerText = `Pertanyaan ${currentQIdx + 1} dari ${total}`;
+      document.getElementById('skrining-kategori-text').innerText = q.kategori || '';
+      const pct = Math.round(((currentQIdx + 1) / total) * 100);
+      document.getElementById('skrining-prog-bar').style.width = pct + '%';
+      document.getElementById('skrining-pertanyaan').innerText = q.teks;
+    }
+
+    async function pilihSkala(skor) {
+      if (!asesmenPaket) return;
+      const q = asesmenPaket.pertanyaan[currentQIdx];
+
+      // HARD-GATE KILLSWITCH PADA ITEM-9 PHQ-9
+      if (currentAsesmenJenis === 'phq9' && q.is_item9 && skor > 0) {
+        bukaModal('modal-sos');
+        document.getElementById('skrining-card').style.display = 'none';
+        const box = document.getElementById('skrining-hasil-box');
+        box.style.display = 'block';
+        document.getElementById('hasil-judul').innerText = '🚨 Prioritas Keselamatan Aktif';
+        document.getElementById('hasil-badge').className = 'mood-trend-badge badge-trend-flatline';
+        document.getElementById('hasil-badge').innerText = 'Jalur Darurat';
+        document.getElementById('hasil-kategori').innerText = 'Rujukan Bantuan Manusia Terverifikasi';
+        document.getElementById('hasil-deskripsi').innerText = 
+          'Pikiran menyakiti diri adalah sinyal bahwa kamu sangat butuh dukungan langsung manusia nyata. ' +
+          'Silakan hubungi layanan darurat 119 Ext 8 (Sejiwa Kemenkes) yang telah dibuka di layar.';
+        return;
+      }
+
+      jawabanAsesmen.push(skor);
+
+      if (currentQIdx + 1 < asesmenPaket.pertanyaan.length) {
+        currentQIdx++;
+        tampilkanPertanyaan();
+      } else {
+        // Asesmen selesai -> Submit ke server
+        kirimJawabanAsesmen();
+      }
+    }
+
+    async function kirimJawabanAsesmen() {
+      document.getElementById('skrining-card').style.display = 'none';
+      const box = document.getElementById('skrining-hasil-box');
+      box.style.display = 'block';
+
+      try {
+        const payload = {
+          jenis: currentAsesmenJenis,
+          jawaban: jawabanAsesmen,
+          geo: 'id'
+        };
+        const res = await fetch(`/api/v1/user/${sessionId}/asesmen`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const rec = await res.json();
+          document.getElementById('hasil-judul').innerText = `Hasil Evaluasi ${currentAsesmenJenis.toUpperCase()}`;
+          const badgeEl = document.getElementById('hasil-badge');
+          badgeEl.innerText = `Skor Total: ${rec.skor_total}`;
+          badgeEl.className = rec.skor_total >= 10 ? 'mood-trend-badge badge-trend-flatline' : 'mood-trend-badge badge-trend-good';
+          
+          document.getElementById('hasil-kategori').innerText = `Kategori: Tingkat ${rec.kategori.toUpperCase()}`;
+          const descMap = {
+            'minimal': 'Gejala emosional berada dalam batas fluktuasi wajar. Pertahankan kebiasaan regulasi diri dan pola istirahat sehat.',
+            'ringan': 'Terdeteksi sedikit tekanan emosional. Latihan pernapasan ritmis dan jurnal harian sangat disarankan.',
+            'sedang': 'Tingkat tekanan cukup membebani aktivitas harian. Disarankan untuk mulai berdiskusi dengan konselor atau orang terpercaya.',
+            'moderat-berat': 'Beban emosi cukup intens. Sangat dianjurkan untuk berkonsultasi langsung dengan psikolog klinis.',
+            'berat': 'Tekanan emosi sangat signifikan. Sangat disarankan untuk segera menjadwalkan asesmen langsung dengan psikolog/psikiater.',
+          };
+          document.getElementById('hasil-deskripsi').innerText = descMap[rec.kategori] || 'Evaluasi suasana hati telah tersimpan.';
+        }
+      } catch (err) {
+        document.getElementById('hasil-deskripsi').innerText = 'Terjadi kendala koneksi saat menyimpan hasil evaluasi.';
+      }
+    }
+
+    function resetAsesmen() {
+      mulaiAsesmen(currentAsesmenJenis);
     }
 
     // Modal Handlers
@@ -1374,6 +2011,234 @@
     function closeModal(e, id) {
       if (e.target.id === id) document.getElementById(id).style.display = 'none';
     }
+
+    // Consent Ledger Handlers (Fase 2)
+    async function muatConsent() {
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/consent`);
+        if (res.ok) {
+          const c = await res.json();
+          document.getElementById('consent-psiko').checked = c.izin_psikoedukasi;
+          document.getElementById('consent-riwayat').checked = c.izin_simpan_riwayat;
+          document.getElementById('consent-mood').checked = c.izin_analisis_mood;
+        }
+      } catch (err) {}
+    }
+
+    async function simpanConsent() {
+      const payload = {
+        user_id: sessionId,
+        izin_psikoedukasi: document.getElementById('consent-psiko').checked,
+        izin_simpan_riwayat: document.getElementById('consent-riwayat').checked,
+        izin_analisis_mood: document.getElementById('consent-mood').checked,
+      };
+      try {
+        await fetch(`/api/v1/user/${sessionId}/consent`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      } catch(err) {}
+    }
+
+    async function konfirmasiHapusData() {
+      if (!confirm('Apakah Anda yakin ingin menghapus seluruh riwayat percakapan dan memori? Tindakan ini tidak dapat dibatalkan.')) return;
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/data`, { method: 'DELETE' });
+        if (res.ok) {
+          alert('✓ Seluruh data riwayat Anda telah dihapus secara permanen.');
+          document.getElementById('chat-messages').innerHTML = `
+            <div class="msg-group anna">
+              <div class="msg-author">🌸 Dr. Anna Reed</div>
+              <div class="msg-bubble">
+                Seluruh riwayat sesi sebelumnya telah dibersihkan. Aku ada di sini, siap memulai lembaran baru denganmu secara aman dan tenang.
+              </div>
+              <div class="msg-time">Baru saja</div>
+            </div>
+          `;
+          document.getElementById('modal-privasi').style.display = 'none';
+        }
+      } catch (err) {
+        alert('Gagal menghubungi server untuk menghapus data.');
+      }
+    }
+
+    // =====================================================================
+    // SAFETY PLAN & ZEN SOUNDSCAPE (FASE 2 SPRINT 2.4)
+    // =====================================================================
+    async function muatSafetyPlan() {
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/safety-plan`);
+        if (!res.ok) return;
+        const p = await res.json();
+        document.getElementById('sp-tanda').value = (p.tanda_peringatan || []).join('\n');
+        document.getElementById('sp-koping').value = (p.strategi_koping || []).join('\n');
+        document.getElementById('sp-personal').value = (p.kontak_personal || []).map(k => `${k.nama}: ${k.kontak_info}`).join('\n');
+        document.getElementById('sp-lingkungan').value = (p.lingkungan_aman || []).join('\n');
+      } catch (err) {}
+    }
+
+    async function simpanSafetyPlan(e) {
+      e.preventDefault();
+      const tanda = document.getElementById('sp-tanda').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const koping = document.getElementById('sp-koping').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const personalRaw = document.getElementById('sp-personal').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const personal = personalRaw.map(line => {
+        const parts = line.split(':');
+        return { nama: parts[0].trim(), kontak_info: parts[1] ? parts[1].trim() : '', keterangan: 'Personal' };
+      });
+      const lingkungan = document.getElementById('sp-lingkungan').value.split('\n').map(s => s.trim()).filter(Boolean);
+
+      const payload = {
+        user_id: sessionId,
+        tanda_peringatan: tanda,
+        strategi_koping: koping,
+        kontak_personal: personal,
+        kontak_profesional: [
+          { nama: 'Layanan Sejiwa Kemenkes', kontak_info: '119 Ext 8', keterangan: '24 Jam Bebas Pulsa' },
+          { nama: 'Panggilan Darurat Terpadu', kontak_info: '112', keterangan: 'Bebas Pulsa' },
+          { nama: 'Kepolisian RI', kontak_info: '110', keterangan: 'Darurat Kamtibmas' }
+        ],
+        lingkungan_aman: lingkungan
+      };
+
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/safety-plan`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const alertEl = document.getElementById('sp-alert');
+        if (res.ok) {
+          alertEl.innerText = '✓ Rencana Keselamatan berhasil disimpan ke database!';
+          setTimeout(() => alertEl.innerText = '', 3500);
+        }
+      } catch (err) {}
+    }
+
+    function cetakSafetyPlan() {
+      const tanda = document.getElementById('sp-tanda').value || 'Belum diisi';
+      const koping = document.getElementById('sp-koping').value || 'Belum diisi';
+      const personal = document.getElementById('sp-personal').value || 'Belum diisi';
+      const lingkungan = document.getElementById('sp-lingkungan').value || 'Belum diisi';
+
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html>
+        <head>
+          <title>Kartu Saku Keselamatan — Dr. Anna Reed</title>
+          <style>
+            body { font-family: sans-serif; padding: 24px; color: #1e293b; max-width: 600px; margin: 0 auto; border: 2px dashed #0284c7; border-radius: 16px; }
+            h2 { color: #0284c7; margin-bottom: 4px; font-size: 1.2rem; }
+            .section { margin-bottom: 12px; }
+            .title { font-weight: bold; font-size: 0.85rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin-bottom: 4px; }
+            .content { font-size: 0.8rem; line-height: 1.4; white-space: pre-line; }
+            .hotlines { background: #fee2e2; border-left: 4px solid #ef4444; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; }
+          </style>
+        </head>
+        <body>
+          <h2>🛡️ Kartu Saku Keselamatan (Safety Plan)</h2>
+          <p style="font-size:0.75rem; color:#64748b; margin-bottom:14px;">Bawa kartu ini di saku/dompet atau simpan tangkapan layar di ponsel.</p>
+          
+          <div class="section"><div class="title">1. Tanda Bahaya Pribadi</div><div class="content">\${tanda}</div></div>
+          <div class="section"><div class="title">2. Koping Mandiri</div><div class="content">\${koping}</div></div>
+          <div class="section"><div class="title">3. Kontak Orang Dekat</div><div class="content">\${personal}</div></div>
+          
+          <div class="section">
+            <div class="title">4. Kontak Krisis Resmi (Bebas Pulsa 24 Jam)</div>
+            <div class="hotlines">
+              <strong>• 119 Ext 8:</strong> Layanan Sejiwa Kemenkes RI (Kesehatan Mental)<br>
+              <strong>• 112:</strong> Panggilan Darurat Terpadu (Ambulans/Damkar)<br>
+              <strong>• 110:</strong> Kepolisian RI | IGD RS Terdekat
+            </div>
+          </div>
+
+          <div class="section"><div class="title">5. Mengamankan Lingkungan</div><div class="content">\${lingkungan}</div></div>
+
+          <button onclick="window.print()" style="margin-top:14px; padding:8px 16px; background:#0284c7; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">Cetak Dokumen</button>
+        </body>
+        </html>
+      `);
+      win.document.close();
+    }
+
+    // Zen Soundscape Procedural Audio Engine (Web Audio API)
+    let zenAudioCtx = null;
+    let zenNoiseNode = null;
+    let zenGainNode = null;
+    let zenIsPlaying = false;
+
+    function toggleZenSoundscape() {
+      if (zenIsPlaying) {
+        stopZenSoundscape();
+      } else {
+        startZenSoundscape();
+      }
+    }
+
+    function startZenSoundscape() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        zenAudioCtx = new AudioContext();
+
+        const bufferSize = zenAudioCtx.sampleRate * 2;
+        const noiseBuffer = zenAudioCtx.createBuffer(1, bufferSize, zenAudioCtx.sampleRate);
+        const output = noiseBuffer.getChannelData(0);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.06;
+          b6 = white * 0.115926;
+        }
+
+        zenNoiseNode = zenAudioCtx.createBufferSource();
+        zenNoiseNode.buffer = noiseBuffer;
+        zenNoiseNode.loop = true;
+
+        const filter = zenAudioCtx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(800, zenAudioCtx.currentTime);
+
+        zenGainNode = zenAudioCtx.createGain();
+        zenGainNode.gain.setValueAtTime(0.01, zenAudioCtx.currentTime);
+        zenGainNode.gain.exponentialRampToValueAtTime(0.18, zenAudioCtx.currentTime + 1.5);
+
+        zenNoiseNode.connect(filter);
+        filter.connect(zenGainNode);
+        zenGainNode.connect(zenAudioCtx.destination);
+
+        zenNoiseNode.start(0);
+        zenIsPlaying = true;
+        document.getElementById('soundscape-text').innerText = 'Zen Audio: ON';
+        document.getElementById('soundscape-btn').classList.add('active');
+      } catch (err) {}
+    }
+
+    function stopZenSoundscape() {
+      if (zenGainNode && zenAudioCtx) {
+        zenGainNode.gain.setValueAtTime(zenGainNode.gain.value, zenAudioCtx.currentTime);
+        zenGainNode.gain.exponentialRampToValueAtTime(0.001, zenAudioCtx.currentTime + 0.8);
+        setTimeout(() => {
+          if (zenNoiseNode) zenNoiseNode.stop();
+          if (zenAudioCtx) zenAudioCtx.close();
+          zenIsPlaying = false;
+          document.getElementById('soundscape-text').innerText = 'Zen Audio: OFF';
+          document.getElementById('soundscape-btn').classList.remove('active');
+        }, 850);
+      } else {
+        zenIsPlaying = false;
+        document.getElementById('soundscape-text').innerText = 'Zen Audio: OFF';
+        document.getElementById('soundscape-btn').classList.remove('active');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', muatConsent);
   </script>
 </body>
 </html>
