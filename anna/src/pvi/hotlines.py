@@ -45,6 +45,15 @@ class DirektoriHotline:
             InfoHotline(kode_negara="sg", nama_layanan="Samaritans of Singapore (SOS)", nomor="1-767", sms_chat="WhatsApp 9151 1767"),
             InfoHotline(kode_negara="sg", nama_layanan="Emergency Ambulance", nomor="995"),
         ],
+        "my": [
+            InfoHotline(kode_negara="my", nama_layanan="Talian HEAL KKM (Kesihatan Mental)", nomor="15555"),
+            InfoHotline(kode_negara="my", nama_layanan="Talian Kasih", nomor="15999", sms_chat="WhatsApp 019-2615999"),
+            InfoHotline(kode_negara="my", nama_layanan="Kecemasan / Polis / Ambulans", nomor="999"),
+        ],
+        "gl": [
+            InfoHotline(kode_negara="gl", nama_layanan="Befrienders Worldwide", nomor="Kunjungi www.befrienders.org", tersedia="Direktori Global"),
+            InfoHotline(kode_negara="gl", nama_layanan="IASP Crisis Centres", nomor="Kunjungi www.iasp.info/resources/Crisis_Centres", tersedia="Direktori Global"),
+        ],
     }
 
     @classmethod

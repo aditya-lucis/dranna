@@ -16,6 +16,9 @@ class CompanionState(TypedDict, total=False):
     # Persona (kompatibilitas: `persona` = persona AKTIF hasil Style Governor)
     persona: str  # "netral" | "waifu" | "sister" | "netral-tenang"
     persona_aktif: str
+    preferensi_gaya: str  # Fase 4: "auto" | "pendengar_tenang" | "ringan_playful" | dll
+    gaya_komunikasi: str  # Register gaya aktif hasil Style Governor v2
+    instruksi_gaya: str  # Pedoman prompt gaya hasil evaluasi Governor v2
 
     # Deteksi & keselamatan
     eskalasi: str  # "GREEN" | "YELLOW" | "ORANGE" | "KANDIDAT_RED" | "RED"

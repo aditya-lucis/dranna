@@ -44,15 +44,22 @@ async def stream_companion(
     )
     await asyncio.sleep(0.005)
 
-    # Injeksi memori episodik lampau (jika diizinkan oleh Consent Ledger)
+    # Injeksi memori episodik lampau & homework aktif (jika diizinkan oleh Consent Ledger)
     ringkasan_lampau = ""
     try:
         from anna.src.storage.consent_repo import ConsentRepository
         from anna.src.storage.episodic_repo import EpisodicRepository
+        from anna.src.storage.homework_repo import HomeworkRepository
         c_repo = ConsentRepository()
         if c_repo.dapatkan_consent(sesi_id).izin_simpan_riwayat:
             ep_repo = EpisodicRepository()
             ringkasan_lampau = ep_repo.bangun_konteks_ringkasan(sesi_id)
+            
+            # Injeksi homework mikro yang sedang aktif (Fase 4)
+            hw_repo = HomeworkRepository()
+            teks_hw = hw_repo.bangun_ringkasan_homework_awal_sesi(sesi_id)
+            if teks_hw:
+                ringkasan_lampau = (ringkasan_lampau + "\n" + teks_hw).strip()
     except Exception:
         ringkasan_lampau = ""
 
@@ -61,6 +68,7 @@ async def stream_companion(
         "sesi_id": sesi_id,
         "persona_preferensi": persona,
         "persona": persona,
+        "preferensi_gaya": "auto",
         "jam": jam,
         "item9_flag": item9_flag,
         "ringkasan_memori": ringkasan_lampau,
@@ -103,7 +111,7 @@ async def stream_companion(
     # 3. Status update sebelum stream chunk
     tahap_menulis = "mengalihkan" if krisis else "menulis"
     yield (
-        f"event: status\ndata: {json.dumps({'tahap': tahap_menulis, 'ekspresi': ekspresi, 'status_layer': status_layer})}\n\n"
+        f"event: status\ndata: {json.dumps({'tahap': tahap_menulis, 'ekspresi': ekspresi, 'eskalasi': eskalasi, 'status_layer': status_layer})}\n\n"
     )
 
     # 4. Event hotline bila tersedia (saat krisis atau hard-gate)

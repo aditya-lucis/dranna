@@ -111,6 +111,7 @@ def susun_input_llm(state: CompanionState) -> list[BaseMessage]:
         memori_ringkasan=state.get("ringkasan_memori", ""),
         metadata=state.get("metadata", {}),
         hard_gate=bool(state.get("hard_gate_aktif")),
+        instruksi_gaya=state.get("instruksi_gaya"),
     )
 
     teknik = state.get("teknik_aktif")

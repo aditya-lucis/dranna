@@ -1040,6 +1040,12 @@
 
     <div class="header-actions">
       <div class="badge-continuity" title="Penyimpanan lokal SQLite WAL aktif">💾 SQLite WAL • Zero-PII</div>
+      <select id="select-geo" class="btn-pill" onchange="gantiWilayah(this.value)" title="Pilih Wilayah Layanan & Hotline" style="cursor:pointer; background:rgba(30, 41, 59, 0.7); color:var(--text-light); border:1px solid var(--border-subtle); outline:none;">
+        <option value="id">🇮🇩 Indonesia</option>
+        <option value="my">🇲🇾 Malaysia</option>
+        <option value="sg">🇸🇬 Singapore</option>
+        <option value="gl">🌐 Global</option>
+      </select>
       <button class="btn-pill" id="soundscape-btn" onclick="toggleZenSoundscape()" title="Suara Alam / Zen Ambience">
         <span id="soundscape-icon">🌧️</span>
         <span id="soundscape-text">Zen Audio: OFF</span>
@@ -1122,6 +1128,21 @@
         <div id="vision-feedback-text" style="font-size:0.72rem; color:var(--text-muted); margin-top:6px; line-height:1.4;">
           Menilai kenyamanan pencahayaan sekitarmu...
         </div>
+      </div>
+
+      <!-- Style Governor v2 (Fase 4: Preferensi Gaya Bicara) -->
+      <div style="margin-top:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:14px; padding:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.74rem; font-weight:700; color:#fff;">Register Gaya (Gov v2)</span>
+          <span id="gov-source-badge" style="font-size:0.62rem; color:var(--accent-warm); background:rgba(244,63,94,0.15); padding:1px 6px; border-radius:8px;">Auto</span>
+        </div>
+        <select id="select-style-gov" onchange="gantiPreferensiGaya(this.value)" style="width:100%; background:rgba(0,0,0,0.5); border:1px solid var(--border-subtle); color:#fff; font-size:0.74rem; border-radius:8px; padding:6px; outline:none;">
+          <option value="auto">🤖 Auto (Sesuai Kepribadian & Sesi)</option>
+          <option value="pendengar_tenang">🌿 Pendengar Tenang (Empati Dalam)</option>
+          <option value="ringan_playful">🌸 Ringan & Playful (Afeksi Hangat)</option>
+          <option value="terstruktur_fokus">🎯 Terstruktur & Fokus (CBT Steps)</option>
+          <option value="validasi_dahulu">🤝 Validasi Dahulu (DBT Supportive)</option>
+        </select>
       </div>
 
       <!-- Bio Singkat -->
@@ -1212,9 +1233,12 @@
     <!-- ============================================== -->
     <section class="glass-card col-tools parallax-card">
       <div class="parallax-shine"></div>
-      <div class="tools-nav">
+      <div class="tools-nav" style="overflow-x:auto; scrollbar-width:none; display:flex; gap:6px;">
         <button class="tool-tab-btn active" onclick="switchToolTab('pane-breath', this)">🌬️ 4-7-8</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-grounding', this)">🌿 5-4-3</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-thought', this)">💡 CBT</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-values', this)">🧭 ACT</button>
+        <button class="tool-tab-btn" onclick="switchToolTab('pane-homework', this)">📋 Tugas</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-journal', this)">📖 Jurnal</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-skrining', this)">📝 Skrining</button>
         <button class="tool-tab-btn" onclick="switchToolTab('pane-safety', this)">🛡️ Plan</button>
@@ -1270,6 +1294,79 @@
           <button class="pose-btn" onclick="resetGroundingWizard()" title="Ulangi dari Langkah 1">
             🔄
           </button>
+        </div>
+      </div>
+
+      <!-- Tab CBT Thought Record 5-Kolom (Fase 4 Sprint 4.4) -->
+      <div id="pane-thought" class="tool-pane">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.8rem; font-weight:700; color:#fff;" id="thought-step-title">Kolom 1: Situasi Pemicu</span>
+          <span class="mood-trend-badge badge-trend-good" id="thought-col-badge">Langkah 1 dari 5</span>
+        </div>
+        <p id="thought-inst" style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px; line-height:1.4;">
+          Situasi apa yang baru saja terjadi? Tuliskan secara singkat dan faktual (1-2 kalimat).
+        </p>
+        <textarea id="thought-input" class="journal-textarea" rows="3" placeholder="Contoh: Saat membaca pesan pekerjaan tadi pagi..."></textarea>
+        <div style="display:flex; gap:6px; margin-top:8px;">
+          <button id="btn-thought-prev" class="pose-btn" style="flex:1;" onclick="prevThoughtStep()" disabled>Kembali</button>
+          <button id="btn-thought-next" class="btn-action-breath" style="flex:2; border-radius:12px;" onclick="nextThoughtStep()">Lanjut ➜</button>
+        </div>
+        <div id="thought-summary-box" style="display:none; margin-top:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:12px; padding:10px; font-size:0.75rem;">
+          <strong style="color:var(--accent-warm);">Pikiran Seimbangmu:</strong>
+          <p id="thought-balanced-text" style="color:#fff; margin:4px 0 8px; font-style:italic; line-height:1.4;"></p>
+          <button class="pose-btn" style="width:100%;" onclick="jadikanThoughtSebagaiTugas()">Jadikan Refleksi Mingguan (Homework) 📋</button>
+        </div>
+      </div>
+
+      <!-- Tab ACT Values Compass & Komitmen (Fase 4 Sprint 4.4) -->
+      <div id="pane-values" class="tool-pane">
+        <p style="font-size:0.76rem; color:var(--text-muted); margin-bottom:8px;">
+          Pilih 1 domain hidup yang paling memanggil hatimu hari ini:
+        </p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:10px;">
+          <button class="pose-btn active" onclick="pilihDomainValues('Keluarga', this)">👨‍👩‍👧 Keluarga</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Relasi Intim', this)">💖 Pasangan</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Persahabatan', this)">🤝 Sahabat</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Pekerjaan', this)">💼 Karier/Karya</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Pendidikan', this)">📚 Belajar</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Rekreasi', this)">🎨 Hobi/Santai</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Komunitas', this)">🌍 Sosial</button>
+          <button class="pose-btn" onclick="pilihDomainValues('Spiritualitas', this)">✨ Ketenangan</button>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:12px; padding:10px; margin-bottom:10px;">
+          <label style="font-size:0.74rem; font-weight:700; color:var(--accent-cyan); display:block; margin-bottom:2px;">Nilai Inti (Values):</label>
+          <p id="values-prompt-text" style="font-size:0.70rem; color:var(--text-dim); margin-bottom:6px;">
+            Dalam domain ini, pribadi seperti apa yang sungguh ingin kamu wujudkan?
+          </p>
+          <input type="text" id="values-core-input" class="chat-input-field" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:8px; padding:6px 10px; font-size:0.78rem; margin-bottom:8px;" placeholder="Contoh: Hadir penuh kasih dan sabar">
+          
+          <label style="font-size:0.74rem; font-weight:700; color:var(--accent-warm); display:block; margin-bottom:2px;">1 Tindakan Mikro Terarah (Committed Action):</label>
+          <input type="text" id="values-action-input" class="chat-input-field" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--border-subtle); border-radius:8px; padding:6px 10px; font-size:0.78rem; margin-bottom:8px;" placeholder="Contoh: Mengirim pesan sapaan hangat">
+          
+          <button class="btn-action-breath" style="width:100%; border-radius:10px;" onclick="simpanTindakanValues()">Komitmenkan Sebagai Tugas Rumah 📌</button>
+          <div id="values-alert" style="font-size:0.72rem; color:#10b981; text-align:center; margin-top:4px;"></div>
+        </div>
+      </div>
+
+      <!-- Tab Tugas Mikro & Pola Anomali (Fase 4 Sprint 4.4) -->
+      <div id="pane-homework" class="tool-pane">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:0.8rem; font-weight:700; color:#fff;">Tugas Mikro Antar-Sesi</span>
+          <button class="pose-btn" style="font-size:0.7rem; padding:3px 8px;" onclick="muatHomework()">🔄 Muat</button>
+        </div>
+        <div id="hw-list-container" style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px; max-height:170px; overflow-y:auto;">
+          <!-- Generated dynamically -->
+        </div>
+
+        <!-- Pattern Insights PCA + MAD -->
+        <div style="border-top:1px solid var(--border-subtle); padding-top:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.78rem; font-weight:700; color:var(--accent-cyan);">Pola Longitudinal (PCA)</span>
+            <span id="pca-variance-badge" class="mood-trend-badge badge-trend-good">SVD 2D</span>
+          </div>
+          <div id="pca-insight-box" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:12px; padding:10px; font-size:0.72rem; line-height:1.4;">
+            <p id="pca-wawasan-text" style="color:var(--text-muted);">Memuat analisis ritme emosi...</p>
+          </div>
         </div>
       </div>
 
@@ -1472,28 +1569,40 @@
 
   <!-- Modal SOS Darurat -->
   <div id="modal-sos" class="modal-backdrop" onclick="closeModal(event, 'modal-sos')">
-    <div class="modal-box">
+    <div class="modal-box" style="max-width:540px;">
       <h2 style="color:#f87171; font-size:1.3rem; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
         <span>🚨</span> Bantuan Kegawatdaruratan
       </h2>
-      <p style="font-size:0.86rem; color:#fecdd3; line-height:1.6; margin-bottom:16px;">
+      <p style="font-size:0.86rem; color:#fecdd3; line-height:1.6; margin-bottom:14px;">
         Jika Anda atau kerabat sedang dalam bahaya fisik, dorongan untuk menyakiti diri, atau krisis berat, mohon segera hubungi layanan profesional resmi di bawah ini:
       </p>
-      <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:16px; padding:16px; margin-bottom:12px;">
-        <strong style="font-size:0.92rem; color:#fff;">Kemenkes RI SEJIWA (Kesehatan Jiwa):</strong>
-        <p style="font-size:0.78rem; color:#fca5a5; margin:4px 0 10px;">Layanan konseling krisis gratis 24 jam sehari.</p>
-        <a href="tel:119,8" style="display:block; text-align:center; background:#dc2626; color:#fff; text-decoration:none; padding:12px; border-radius:12px; font-weight:700;">
-          📞 Hubungi 119 Ext 8
-        </a>
+
+      <!-- Dynamic Hotlines per Wilayah -->
+      <div id="sos-hotline-container" style="margin-bottom:14px;">
+        <!-- Akan dirender otomatis oleh renderSosHotlines(currentGeo) -->
       </div>
-      <div style="background:rgba(255,255,255,0.05); border:1px solid var(--border-subtle); border-radius:16px; padding:14px; margin-bottom:16px;">
-        <strong style="font-size:0.88rem;">Panggilan Darurat Kepolisian & Terpadu:</strong>
-        <p style="font-size:0.78rem; color:var(--text-muted); margin:4px 0 8px;">Bebas pulsa di seluruh Indonesia.</p>
+
+      <!-- Partner Mode SOS Bridge (Zero-PII) -->
+      <div style="background:rgba(56, 189, 248, 0.1); border:1px solid rgba(56, 189, 248, 0.3); border-radius:16px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:0.88rem; font-weight:700; color:#38bdf8; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+          <span>🤝</span> Hubungi Kontak Terpercaya (Partner Mode)
+        </div>
+        <p style="font-size:0.75rem; color:#bae6fd; margin-bottom:10px; line-height:1.4;">
+          Kirim pesan darurat ringkas ke sahabat/keluarga tanpa membocorkan riwayat percakapan pribadi Anda.
+        </p>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <input type="text" id="partner-sos-phone" placeholder="Nomor WA / Telp (contoh: 628123456789)" style="flex:1; background:rgba(15,23,42,0.8); border:1px solid var(--border-subtle); color:#fff; border-radius:10px; padding:8px 12px; font-size:0.82rem;" />
+        </div>
         <div style="display:flex; gap:8px;">
-          <a href="tel:110" style="flex:1; text-align:center; background:#334155; color:#fff; text-decoration:none; padding:10px; border-radius:10px; font-size:0.85rem; font-weight:600;">Polisi: 110</a>
-          <a href="tel:112" style="flex:1; text-align:center; background:#334155; color:#fff; text-decoration:none; padding:10px; border-radius:10px; font-size:0.85rem; font-weight:600;">Darurat: 112</a>
+          <button type="button" class="btn-pill" style="flex:1; justify-content:center; background:#059669; border-color:#10b981; color:#fff; font-weight:600;" onclick="bagikanPartnerSOS('wa')">
+            💬 WhatsApp
+          </button>
+          <button type="button" class="btn-pill" style="flex:1; justify-content:center; background:#2563eb; border-color:#3b82f6; color:#fff; font-weight:600;" onclick="bagikanPartnerSOS('sms')">
+            📱 SMS
+          </button>
         </div>
       </div>
+
       <button class="pose-btn" style="width:100%;" onclick="document.getElementById('modal-sos').style.display='none'">
         Kembali ke Dr. Anna
       </button>
@@ -1560,6 +1669,32 @@
         </div>
       </div>
 
+      <!-- Hak Portabilitas Data UU PDP No. 27/2022 & GDPR -->
+      <div style="background:rgba(56, 189, 248, 0.08); border:1px solid rgba(56, 189, 248, 0.25); border-radius:16px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:0.86rem; font-weight:700; color:#38bdf8; margin-bottom:4px;">
+          Hak Akses & Portabilitas Data (UU PDP No. 27/2022)
+        </div>
+        <p style="font-size:0.74rem; color:#bae6fd; margin-bottom:10px; line-height:1.4;">
+          Unduh seluruh data interaksi, jurnal, asesmen, preferensi gaya, dan riwayat consent dalam format JSON terstruktur.
+        </p>
+        <button class="pose-btn" style="width:100%; background:rgba(56,189,248,0.15); border-color:#38bdf8; color:#38bdf8;" onclick="unduhDataExport()">
+          📥 Unduh Arsip Data Lengkap (JSON UU PDP)
+        </button>
+      </div>
+
+      <!-- Manajemen Retensi Data (Auto-TTL Pruning) -->
+      <div style="background:rgba(234, 179, 8, 0.08); border:1px solid rgba(234, 179, 8, 0.25); border-radius:16px; padding:14px; margin-bottom:14px;">
+        <div style="font-size:0.86rem; font-weight:700; color:#facc15; margin-bottom:4px;">
+          Manajemen Retensi Data (Auto-TTL Pruning)
+        </div>
+        <p style="font-size:0.74rem; color:#fef08a; margin-bottom:10px; line-height:1.4;">
+          Pembersihan mandiri untuk data percakapan dan audit log yang telah melewati masa retensi (30 hari).
+        </p>
+        <button class="pose-btn" style="width:100%; background:rgba(234,179,8,0.15); border-color:#facc15; color:#facc15;" onclick="bersihkanDataTTL()">
+          🧹 Bersihkan Data Melewati Retensi (TTL)
+        </button>
+      </div>
+
       <!-- Right to be Forgotten (RTBF) -->
       <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25); border-radius:16px; padding:14px; margin-bottom:16px;">
         <div style="font-size:0.86rem; font-weight:700; color:#f87171; margin-bottom:4px;">
@@ -1586,8 +1721,107 @@
 
     let currentPose = 'glasses';
     let currentPersona = 'waifu';
+    let currentGeo = localStorage.getItem('dranna_geo') || 'id';
     let ttsActive = true;
     let sessionId = 'sesi-' + Math.random().toString(36).substring(2, 9);
+
+    // =====================================================================
+    // DIREKTORI HOTLINE & PARTNER MODE (FASE 5 SPRINT 5.1 & 5.4)
+    // =====================================================================
+    const HOTLINE_DATA = {
+      'id': {
+        judul: 'Indonesia (Kemenkes & Darurat Nasional)',
+        items: [
+          { nama: 'Kemenkes RI SEJIWA (Kesehatan Jiwa 24 Jam)', tel: '119,8', label: '📞 Hubungi 119 Ext 8', highlight: true, desc: 'Layanan konseling krisis gratis 24 jam sehari.' },
+          { nama: 'Panggilan Darurat Kepolisian', tel: '110', label: 'Polisi: 110', highlight: false, desc: 'Bebas pulsa di seluruh Indonesia.' },
+          { nama: 'Panggilan Darurat Terpadu', tel: '112', label: 'Darurat: 112', highlight: false, desc: 'Bebas pulsa di seluruh Indonesia.' }
+        ]
+      },
+      'my': {
+        judul: 'Malaysia (KKM & Talian Kasih)',
+        items: [
+          { nama: 'Talian HEAL 15555 (KKM Mental Health)', tel: '15555', label: '📞 Hubungi 15555', highlight: true, desc: 'Layanan sokongan kesihatan mental KKM.' },
+          { nama: 'Talian Kasih 15999 (KPWKM)', tel: '15999', label: 'Talian Kasih: 15999', highlight: false, desc: 'Krisis kebajikan & sokongan psikososial.' },
+          { nama: 'Panggilan Kecemasan Polis / Ambulans', tel: '999', label: 'Kecemasan: 999', highlight: false, desc: 'Bebas tol seluruh Malaysia.' }
+        ]
+      },
+      'sg': {
+        judul: 'Singapore (SOS & National Helplines)',
+        items: [
+          { nama: 'SOS 24-hr Hotline (Samaritans of Singapore)', tel: '1767', label: '📞 Call 1-767 (SOS)', highlight: true, desc: '24-hour confidential emotional support.' },
+          { nama: 'IMH Mental Health Helpline', tel: '63892222', label: 'IMH: 6389-2222', highlight: false, desc: 'Institute of Mental Health 24-hour crisis line.' },
+          { nama: 'Emergency Police / Ambulance', tel: '999', label: 'Police: 999 / Amb: 995', highlight: false, desc: 'Emergency response services.' }
+        ]
+      },
+      'gl': {
+        judul: 'Global Crisis Resources (Befrienders & IASP)',
+        items: [
+          { nama: 'Befrienders Worldwide', url: 'https://www.befrienders.org', label: '🌐 Buka Befrienders Worldwide', highlight: true, desc: 'Global emotional support directory.' },
+          { nama: 'IASP Crisis Centres Worldwide', url: 'https://www.iasp.info/resources/Crisis_Centres/', label: '🌐 Buka Direktori IASP', highlight: false, desc: 'International Association for Suicide Prevention.' }
+        ]
+      }
+    };
+
+    function gantiWilayah(geo) {
+      currentGeo = geo;
+      localStorage.setItem('dranna_geo', geo);
+      renderSosHotlines(geo);
+    }
+
+    function renderSosHotlines(geo) {
+      const container = document.getElementById('sos-hotline-container');
+      if (!container) return;
+      const data = HOTLINE_DATA[geo] || HOTLINE_DATA['id'];
+
+      let html = `<div style="font-size:0.78rem; color:var(--text-dim); margin-bottom:8px; font-weight:600;">Wilayah: ${escapeHtml(data.judul)}</div>`;
+
+      data.items.forEach(item => {
+        if (item.highlight) {
+          html += `
+            <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); border-radius:14px; padding:12px; margin-bottom:10px;">
+              <strong style="font-size:0.88rem; color:#fff;">${escapeHtml(item.nama)}</strong>
+              <p style="font-size:0.75rem; color:#fca5a5; margin:3px 0 8px;">${escapeHtml(item.desc)}</p>
+              ${item.tel 
+                ? `<a href="tel:${item.tel}" style="display:block; text-align:center; background:#dc2626; color:#fff; text-decoration:none; padding:10px; border-radius:10px; font-size:0.88rem; font-weight:700;">${escapeHtml(item.label)}</a>`
+                : `<a href="${item.url}" target="_blank" rel="noopener noreferrer" style="display:block; text-align:center; background:#dc2626; color:#fff; text-decoration:none; padding:10px; border-radius:10px; font-size:0.88rem; font-weight:700;">${escapeHtml(item.label)}</a>`}
+            </div>
+          `;
+        } else {
+          html += `
+            <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); border-radius:12px; padding:10px 12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <div style="flex:1;">
+                <div style="font-size:0.82rem; color:#fff; font-weight:600;">${escapeHtml(item.nama)}</div>
+                <div style="font-size:0.72rem; color:var(--text-dim);">${escapeHtml(item.desc)}</div>
+              </div>
+              ${item.tel
+                ? `<a href="tel:${item.tel}" style="background:#334155; color:#fff; text-decoration:none; padding:7px 12px; border-radius:8px; font-size:0.78rem; font-weight:600; white-space:nowrap;">${escapeHtml(item.label)}</a>`
+                : `<a href="${item.url}" target="_blank" rel="noopener noreferrer" style="background:#334155; color:#fff; text-decoration:none; padding:7px 12px; border-radius:8px; font-size:0.78rem; font-weight:600; white-space:nowrap;">${escapeHtml(item.label)}</a>`}
+            </div>
+          `;
+        }
+      });
+      container.innerHTML = html;
+    }
+
+    function bagikanPartnerSOS(tipe) {
+      const input = document.getElementById('partner-sos-phone');
+      let phone = input ? input.value.trim().replace(/[^0-9]/g, '') : '';
+      if (!phone) {
+        alert('Mohon masukkan nomor kontak terpercaya terlebih dahulu.');
+        if (input) input.focus();
+        return;
+      }
+      localStorage.setItem('dranna_partner_phone', phone);
+      const pesan = 'Halo, aku sedang merasa sangat kewalahan dan butuh teman bicara saat ini. Bisa tolong hubungi aku?';
+
+      if (tipe === 'wa') {
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(pesan)}`;
+        window.open(url, '_blank');
+      } else if (tipe === 'sms') {
+        const url = `sms:${phone}?body=${encodeURIComponent(pesan)}`;
+        window.location.href = url;
+      }
+    }
 
     // Ganti Pose Avatar
     function setPose(pose) {
@@ -1663,6 +1897,7 @@
     }
 
     // Web Speech API Text-to-Speech (TTS) Tuning (Fase 3 Sprint 3.1)
+    window._drAnnaUtterance = null;
     function bicara(teks, paksaTenang = false) {
       if (!ttsActive || !('speechSynthesis' in window)) return;
       window.speechSynthesis.cancel();
@@ -1684,8 +1919,17 @@
       }
 
       utter.onstart = () => document.getElementById('visualizer').classList.add('speaking');
-      utter.onend = () => document.getElementById('visualizer').classList.remove('speaking');
-      utter.onerror = () => document.getElementById('visualizer').classList.remove('speaking');
+      utter.onend = () => {
+        document.getElementById('visualizer').classList.remove('speaking');
+        window._drAnnaUtterance = null;
+      };
+      utter.onerror = () => {
+        document.getElementById('visualizer').classList.remove('speaking');
+        window._drAnnaUtterance = null;
+      };
+
+      // Mencegah bug V8 garbage collection prematur di Chromium
+      window._drAnnaUtterance = utter;
       window.speechSynthesis.speak(utter);
     }
 
@@ -1803,7 +2047,7 @@
         const response = await fetch(`/api/v1/sesi/${sessionId}/stream`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pesan, persona: currentPersona, geo: 'id', jam: new Date().getHours() }),
+          body: JSON.stringify({ pesan, persona: currentPersona, geo: currentGeo, jam: new Date().getHours() }),
         });
 
         const reader = response.body.getReader();
@@ -1837,7 +2081,7 @@
                   setAvatarState('menulis');
                 }
                 fullText += data.teks;
-                bubbleEl.innerHTML = fullText.replace(/\n/g, '<br>');
+                bubbleEl.innerHTML = escapeHtml(fullText).replace(/\n/g, '<br>');
                 container.scrollTop = container.scrollHeight;
               } else if (eventType === 'status') {
                 if (data.ekspresi) setAvatarState(data.ekspresi);
@@ -1861,7 +2105,7 @@
           fullText = "Aku mendengar ceritamu. Pelan-pelan saja ya, aku di sini untuk menemanimu.";
         }
 
-        bubbleEl.innerHTML = fullText.replace(/\n/g, '<br>');
+        bubbleEl.innerHTML = escapeHtml(fullText).replace(/\n/g, '<br>');
         timeEl.innerText = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         if (!isCrisis) {
           setAvatarState('siap');
@@ -1895,6 +2139,9 @@
         }
       } else if (paneId === 'pane-safety') {
         muatSafetyPlan();
+      } else if (paneId === 'pane-homework') {
+        muatHomework();
+        muatPolaPCA();
       }
     }
 
@@ -2210,7 +2457,7 @@
         const payload = {
           jenis: currentAsesmenJenis,
           jawaban: jawabanAsesmen,
-          geo: 'id'
+          geo: currentGeo
         };
         const res = await fetch(`/api/v1/user/${sessionId}/asesmen`, {
           method: 'POST',
@@ -2244,7 +2491,12 @@
     }
 
     // Modal Handlers
-    function bukaModal(id) { document.getElementById(id).style.display = 'flex'; }
+    function bukaModal(id) {
+      if (id === 'modal-sos') {
+        renderSosHotlines(currentGeo);
+      }
+      document.getElementById(id).style.display = 'flex';
+    }
     function closeModal(e, id) {
       if (e.target.id === id) document.getElementById(id).style.display = 'none';
     }
@@ -2301,6 +2553,49 @@
         }
       } catch (err) {
         alert('Gagal menghubungi server untuk menghapus data.');
+      }
+    }
+
+    // =====================================================================
+    // HAK PORTABILITAS & PRUNING TTL (FASE 5 SPRINT 5.2 & 5.4)
+    // =====================================================================
+    async function unduhDataExport() {
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/export`);
+        if (!res.ok) {
+          alert('Gagal mengambil arsip data. Silakan coba beberapa saat lagi.');
+          return;
+        }
+        const data = await res.json();
+        const jsonStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `dranna-data-portability-${sessionId}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        alert('Terjadi kesalahan saat mengunduh data portabilitas.');
+      }
+    }
+
+    async function bersihkanDataTTL() {
+      if (!confirm('Apakah Anda ingin memicu pembersihan data lama yang telah melewati masa retensi aman (30 hari)?')) return;
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/prune?durasi_hari=30`, { method: 'POST' });
+        if (res.ok) {
+          const hasil = await res.json();
+          const r = hasil.rincian || hasil.laporan_pembersihan || {};
+          const total = (r.mood_logs || 0) + (r.episodic_memories || 0) + (r.asesmen_klinis || 0) + (r.homework_tasks || 0);
+          alert(`✓ Pembersihan TTL selesai!\nTotal entitas dibersihkan: ${total} record (Mood: ${r.mood_logs || 0}, Memori: ${r.episodic_memories || 0}, Asesmen: ${r.asesmen_klinis || 0}, Homework: ${r.homework_tasks || 0}).`);
+        } else {
+          alert('Pembersihan data retensi belum dapat diproses.');
+        }
+      } catch (err) {
+        alert('Gagal memicu pembersihan data retensi.');
       }
     }
 
@@ -2689,8 +2984,12 @@
     }
 
     function lanjutGroundingStep() {
-      playTibetanChime(432 + (currentGroundingIndex >= 0 ? currentGroundingIndex * 35 : 0), 1.8);
-      if (currentGroundingIndex < GROUNDING_DATA.length - 1 && currentGroundingIndex >= 0) {
+      if (currentGroundingIndex === -1) {
+        resetGroundingWizard();
+        return;
+      }
+      playTibetanChime(432 + currentGroundingIndex * 35, 1.8);
+      if (currentGroundingIndex < GROUNDING_DATA.length - 1) {
         currentGroundingIndex++;
         renderGroundingStep();
       } else {
@@ -2738,6 +3037,9 @@
           audio: false
         });
         videoEl.srcObject = visionStream;
+        visionStream.getVideoTracks().forEach(track => {
+          track.onended = () => stopVisionCam();
+        });
         camBox.style.display = 'block';
         btn.innerText = '⏹️ Matikan Cermin';
         btn.style.borderColor = '#ef4444';
@@ -2795,7 +3097,7 @@
             user_id: sessionId,
             kecerahan: avgBrightness,
             indikator_postur: 'netral',
-            eskalasi: 'HIJAU'
+            eskalasi: (currentAvatarState === 'tenang') ? 'ORANGE' : 'HIJAU'
           })
         });
         if (res.ok) {
@@ -2809,11 +3111,239 @@
       } catch (err) {}
     }
 
+    // =========================================================================
+    // STYLE GOVERNOR v2 HANDLERS (FASE 4 SPRINT 4.1)
+    // =========================================================================
+    async function gantiPreferensiGaya(gaya) {
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/style`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: sessionId,
+            preferensi_gaya: gaya,
+            persona: currentPersona
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const badge = document.getElementById('gov-source-badge');
+          if (badge) {
+            badge.innerText = data.evaluasi.gaya_aktif;
+          }
+        }
+      } catch (err) {}
+    }
+
+    // =========================================================================
+    // CBT THOUGHT RECORD 5-KOLOM WIZARD (FASE 4 SPRINT 4.4)
+    // =========================================================================
+    const THOUGHT_COLUMNS = [
+      { step: 1, title: 'Kolom 1: Situasi Pemicu', badge: 'Langkah 1 dari 5', inst: 'Situasi apa yang baru saja terjadi? Tuliskan secara singkat dan faktual (1-2 kalimat).', ph: 'Contoh: Saat membaca pesan pekerjaan tadi pagi...' },
+      { step: 2, title: 'Kolom 2: Pikiran Otomatis', badge: 'Langkah 2 dari 5', inst: 'Pikiran pertama apa yang langsung melintas di kepalamu? Jangan dianalisis dulu, catat apa adanya.', ph: 'Contoh: Aku pasti akan mengacaukannya lagi...' },
+      { step: 3, title: 'Kolom 3: Intensitas Emosi', badge: 'Langkah 3 dari 5', inst: 'Emosi apa yang kamu rasakan, dan seberapa intens (skala 0-100)? Boleh lebih dari satu.', ph: 'Contoh: Cemas 80%, Malu 50%...' },
+      { step: 4, title: 'Kolom 4: Bukti Pendukung', badge: 'Langkah 4 dari 5', inst: 'Fakta nyata apa yang MENDUKUNG pikiran otomatis tadi? Pisahkan antara fakta vs perasaan.', ph: 'Contoh: Pekerjaan ini memang memiliki tenggat waktu yang ketat...' },
+      { step: 5, title: 'Kolom 5: Bukti Penentang & Pikiran Seimbang', badge: 'Langkah 5 dari 5', inst: 'Fakta apa yang MENENTANG pikiran itu? Gabungkan keduanya menjadi satu kalimat seimbang yang realistis.', ph: 'Contoh: Meskipun tugas ini menantang, aku punya pengalaman menyelesaikannya sebelumnya...' },
+    ];
+
+    let currentThoughtStep = 0;
+    const thoughtAnswers = ['', '', '', '', ''];
+
+    function renderThoughtStep() {
+      const col = THOUGHT_COLUMNS[currentThoughtStep];
+      document.getElementById('thought-step-title').innerText = col.title;
+      document.getElementById('thought-col-badge').innerText = col.badge;
+      document.getElementById('thought-inst').innerText = col.inst;
+      const input = document.getElementById('thought-input');
+      input.placeholder = col.ph;
+      input.value = thoughtAnswers[currentThoughtStep] || '';
+      input.focus();
+
+      document.getElementById('btn-thought-prev').disabled = (currentThoughtStep === 0);
+      document.getElementById('btn-thought-next').innerText = (currentThoughtStep === 4) ? 'Selesai & Seimbangkan 🎉' : 'Lanjut ➜';
+    }
+
+    function nextThoughtStep() {
+      const input = document.getElementById('thought-input');
+      thoughtAnswers[currentThoughtStep] = input.value.trim();
+
+      if (currentThoughtStep < 4) {
+        currentThoughtStep++;
+        renderThoughtStep();
+      } else {
+        // Selesai seluruh 5 kolom
+        const balanced = thoughtAnswers[4] || thoughtAnswers[1] || 'Tetap tenang dan bernapas perlahan.';
+        document.getElementById('thought-balanced-text').innerText = `"${balanced}"`;
+        document.getElementById('thought-summary-box').style.display = 'block';
+        playTibetanChime(528, 2.5);
+      }
+    }
+
+    function prevThoughtStep() {
+      const input = document.getElementById('thought-input');
+      thoughtAnswers[currentThoughtStep] = input.value.trim();
+      if (currentThoughtStep > 0) {
+        currentThoughtStep--;
+        renderThoughtStep();
+      }
+    }
+
+    async function jadikanThoughtSebagaiTugas() {
+      const balanced = thoughtAnswers[4] || 'Refleksi pikiran seimbang';
+      try {
+        await fetch(`/api/v1/user/${sessionId}/homework`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            kategori: 'thought_record',
+            deskripsi: `Ingat pikiran seimbangmu: "${balanced}"`,
+          })
+        });
+        alert('Pikiran seimbang berhasil disimpan ke daftar tugas mikro harianmu! 📋');
+        switchToolTab('pane-homework', document.querySelectorAll('.tool-tab-btn')[4]);
+      } catch (err) {}
+    }
+
+    // =========================================================================
+    // ACT VALUES COMPASS HANDLERS (FASE 4 SPRINT 4.4)
+    // =========================================================================
+    let currentDomainValues = 'Keluarga';
+
+    function pilihDomainValues(domain, btn) {
+      currentDomainValues = domain;
+      btn.parentElement.querySelectorAll('.pose-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('values-prompt-text').innerText = 
+        `Dalam domain ${domain}, pribadi seperti apa yang sungguh ingin kamu wujudkan?`;
+    }
+
+    async function simpanTindakanValues() {
+      const nilai = document.getElementById('values-core-input').value.trim();
+      const aksi = document.getElementById('values-action-input').value.trim();
+      const alertBox = document.getElementById('values-alert');
+
+      if (!aksi) {
+        alert('Mohon sebutkan 1 tindakan mikro kecil yang ingin kamu lakukan.');
+        return;
+      }
+
+      try {
+        const deskripsi = `[${currentDomainValues}] ${aksi}${nilai ? ' (Nilai: ' + nilai + ')' : ''}`;
+        const res = await fetch(`/api/v1/user/${sessionId}/homework`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            kategori: 'values',
+            deskripsi: deskripsi
+          })
+        });
+
+        if (res.ok) {
+          alertBox.innerText = '✨ Komitmen berhasil dijadikan tugas rumah mandiri!';
+          document.getElementById('values-core-input').value = '';
+          document.getElementById('values-action-input').value = '';
+          setTimeout(() => { alertBox.innerText = ''; }, 3000);
+        }
+      } catch (err) {
+        alertBox.innerText = 'Gagal menyimpan komitmen.';
+      }
+    }
+
+    // =========================================================================
+    // HOMEWORK & POLA PCA ANOMALI HANDLERS (FASE 4 SPRINT 4.4)
+    // =========================================================================
+    async function muatHomework() {
+      const container = document.getElementById('hw-list-container');
+      if (!container) return;
+
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/homework`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const list = data.tugas || [];
+
+        if (list.length === 0) {
+          container.innerHTML = '<div style="font-size:0.75rem; color:var(--text-dim); text-align:center; padding:12px;">Belum ada tugas mikro aktif. Ambil komitmen dari tab ACT atau CBT!</div>';
+          return;
+        }
+
+        container.innerHTML = '';
+        list.forEach(t => {
+          const isDone = t.status === 'selesai';
+          const card = document.createElement('div');
+          card.style.cssText = `background:rgba(255,255,255,${isDone ? '0.01' : '0.04'}); border:1px solid ${isDone ? 'rgba(255,255,255,0.05)' : 'var(--border-subtle)'}; border-radius:10px; padding:8px 10px; display:flex; align-items:center; justify-content:space-between; gap:8px; opacity:${isDone ? '0.5' : '1'};`;
+          card.innerHTML = `
+            <div style="flex:1;">
+              <div style="font-size:0.65rem; color:var(--accent-cyan); text-transform:uppercase; font-weight:700;">${escapeHtml(t.kategori)}</div>
+              <div style="font-size:0.76rem; color:#fff; text-decoration:${isDone ? 'line-through' : 'none'}; line-height:1.3;">${escapeHtml(t.deskripsi)}</div>
+            </div>
+            ${isDone 
+              ? '<span style="font-size:0.72rem; color:#10b981; font-weight:700;">✓ Selesai</span>' 
+              : `<button class="pose-btn" style="padding:4px 8px; font-size:0.68rem;" onclick="centangHomework('${t.id}')">Tandai Selesai</button>`}
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {}
+    }
+
+    async function centangHomework(taskId) {
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/homework/${taskId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'selesai', refleksi: 'Selesai dikerjakan mandiri' })
+        });
+        if (res.ok) {
+          playTibetanChime(528, 2.0);
+          muatHomework();
+        }
+      } catch (err) {}
+    }
+
+    async function muatPolaPCA() {
+      const wawasanBox = document.getElementById('pca-wawasan-text');
+      const badge = document.getElementById('pca-variance-badge');
+      if (!wawasanBox) return;
+
+      try {
+        const res = await fetch(`/api/v1/user/${sessionId}/insights/pattern`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        if (!data.cukup_data) {
+          wawasanBox.innerText = data.ringkasan_wawasan;
+          return;
+        }
+
+        const varTotal = data.rasio_variansi ? Math.round(data.rasio_variansi.reduce((a, b) => a + b, 0) * 100) : 0;
+        if (badge) badge.innerText = `Variansi: ${varTotal}%`;
+
+        let text = `<strong>${escapeHtml(data.ringkasan_wawasan)}</strong><br>`;
+        if (data.pesan_suportif) {
+          text += `<span style="color:var(--accent-warm); font-style:italic;">"${escapeHtml(data.pesan_suportif)}"</span>`;
+        }
+        wawasanBox.innerHTML = text;
+      } catch (err) {}
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      const selectGeoEl = document.getElementById('select-geo');
+      if (selectGeoEl) selectGeoEl.value = currentGeo;
+      renderSosHotlines(currentGeo);
+
+      const savedPartnerPhone = localStorage.getItem('dranna_partner_phone');
+      const partnerInput = document.getElementById('partner-sos-phone');
+      if (savedPartnerPhone && partnerInput) {
+        partnerInput.value = savedPartnerPhone;
+      }
+
       muatConsent();
       initThreeCyberzen();
       initMouseParallax();
       renderGroundingStep();
+      renderThoughtStep();
+      muatHomework();
+      muatPolaPCA();
     });
   </script>
 </body>

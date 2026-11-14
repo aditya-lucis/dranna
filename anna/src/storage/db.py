@@ -110,6 +110,30 @@ def init_db(db_path: Path | None = None):
             dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         CREATE INDEX IF NOT EXISTS idx_asesmen_user ON asesmen_klinis(user_id);
+
+        -- 6. Homework Antar-Sesi & Behavioral Activation (Fase 4)
+        CREATE TABLE IF NOT EXISTS homework_tasks (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            kategori TEXT NOT NULL,              -- 'napas' | 'thought_record' | 'values' | 'aktivitas_ba'
+            deskripsi TEXT NOT NULL,
+            status TEXT DEFAULT 'pending',       -- 'pending' | 'selesai' | 'dilewati'
+            tenggat_waktu TEXT,                  -- ISO timestamp
+            refleksi_pengguna TEXT,
+            dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            diperbarui_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_homework_user_status ON homework_tasks(user_id, status);
+
+        -- 7. Audit Event Logs (Zero-PII Compliance & Safety Tracking - Fase 5)
+        CREATE TABLE IF NOT EXISTS audit_event_logs (
+            id TEXT PRIMARY KEY,
+            tipe_peristiwa TEXT NOT NULL,        -- 'eskalasi_krisis' | 'rtbf_dihapus' | 'ekspor_data' | 'audit_rilis'
+            eskalasi TEXT DEFAULT 'GREEN',
+            metadata_json TEXT DEFAULT '{}',
+            waktu_iso TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_audit_waktu ON audit_event_logs(waktu_iso);
         """)
         try:
             conn.execute("ALTER TABLE consent_ledger ADD COLUMN izin_analisis_ekspresi INTEGER DEFAULT 0;")

@@ -14,6 +14,7 @@ from langchain_core.messages import AIMessage
 
 from anna.src.agent.arsitektur import CompanionState
 from anna.src.agent.deteksi import nilai_risiko
+from anna.src.agent.governor_v2 import StyleGovernorV2, StyleConfig
 from anna.src.config import get_settings
 from anna.src.piv.governor import StyleGovernor
 from anna.src.pvi.hotlines import DirektoriHotline, format_rujukan_geo
@@ -88,6 +89,14 @@ def evaluasi_keselamatan(state: CompanionState) -> CompanionState:
     hard_gate = eskalasi in ("ORANGE", "KANDIDAT_RED", "RED")
 
     preferensi = resolusi_preferensi(state)
+    gov_cfg = StyleConfig(
+        user_id=state.get("sesi_id", "default"),
+        preferensi_gaya=state.get("preferensi_gaya", "auto"),
+        persona=preferensi,
+    )
+    gov_v2 = StyleGovernorV2(config=gov_cfg)
+    hasil_gaya = gov_v2.evaluasi_gaya(eskalasi=eskalasi)
+
     gov = StyleGovernor()
     gov.set_persona(preferensi)
     # Governor memahami GREEN/YELLOW/ORANGE/RED; KANDIDAT_RED diperlakukan sebagai RED.
@@ -111,6 +120,8 @@ def evaluasi_keselamatan(state: CompanionState) -> CompanionState:
         "persona_preferensi": preferensi,
         "persona_aktif": persona_aktif,
         "persona": persona_aktif,
+        "gaya_komunikasi": hasil_gaya.gaya_aktif,
+        "instruksi_gaya": hasil_gaya.instruksi_prompt,
         "ekspresi_avatar": EKSPRESI[eskalasi],
         # reset artefak giliran sebelumnya agar tidak bocor lewat checkpointer
         "teknik_aktif": None,

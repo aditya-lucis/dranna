@@ -85,6 +85,7 @@ class ConsentRepository:
                 ("safety_plans", "user_id"),
                 ("episodic_memories", "user_id"),
                 ("asesmen_klinis", "user_id"),
+                ("homework_tasks", "user_id"),
                 ("consent_ledger", "user_id"),
             ]
             for tabel, col in tabel_list:

@@ -2,7 +2,7 @@
 import json
 import os
 from fastapi import FastAPI, Query, Body, HTTPException
-from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.responses import StreamingResponse, FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -14,11 +14,17 @@ from anna.src.storage.mood_repo import MoodRepository
 from anna.src.storage.asesmen_repo import AsesmenRepository, AsesmenSubmit
 from anna.src.storage.safety_plan_repo import SafetyPlanRepository, SafetyPlanModel
 from anna.src.storage.episodic_repo import EpisodicRepository
+from anna.src.storage.homework_repo import HomeworkRepository, HomeworkItem
+from anna.src.storage.export_service import ExportService, catat_audit_log
+from anna.src.agent.governor_v2 import StyleGovernorV2, StyleConfig
+from anna.src.klinik.pola_longitudinal import DetektorPolaLongitudinal
 from anna.src.klinik.pertanyaan_asesmen import dapatkan_paket_asesmen
 from anna.src.pix.journal import CatatanJurnal
 from anna.src.pix.speech import siapkan_parameter_suara, bersihkan_teks_untuk_suara
 from anna.src.pix.vision import ProksiVisualInput, evaluasi_visual_suportif
 from anna.src.px.healthz import router_healthz
+from anna.src.px.telemetri import TelemetriKlinis
+from anna.src.px.audit_pipeline import PipelineAuditKlinis
 
 app = FastAPI(title="Project Serenity SSE API", version="1.0.0")
 app.include_router(router_healthz)
@@ -142,6 +148,11 @@ def lupakan_data_user(user_id: str):
             _checkpointer.delete_thread(user_id)
         except Exception:
             pass
+    catat_audit_log(
+        tipe_peristiwa="rtbf_dihapus",
+        eskalasi="GREEN",
+        metadata={"user_id": user_id, "laporan": laporan},
+    )
     return {
         "status": "terhapus",
         "pesan": "Seluruh riwayat, memori episodik, catatan mood, dan asesmen berhasil dihapus permanen.",
@@ -290,4 +301,141 @@ def analisis_visual_proksi(user_id: str, input_data: ProksiVisualInput):
     c = _consent_repo.dapatkan_consent(user_id)
     hasil = evaluasi_visual_suportif(data=input_data, izin_consent=c.izin_analisis_ekspresi)
     return hasil.model_dump()
+
+
+# =====================================================================
+# ENDPOINTS PERSONALISASI & INTERVENSI LANJUTAN (FASE 4)
+# =====================================================================
+_homework_repo = HomeworkRepository()
+_pola_detektor = DetektorPolaLongitudinal()
+_user_style_configs: dict[str, StyleConfig] = {}
+
+
+@app.get("/api/v1/user/{user_id}/style")
+def dapatkan_preferensi_gaya(user_id: str):
+    """Mengambil preferensi gaya komunikasi yang tersimpan untuk pengguna."""
+    cfg = _user_style_configs.get(user_id, StyleConfig(user_id=user_id, preferensi_gaya="auto", persona="netral"))
+    gov = StyleGovernorV2(config=cfg)
+    eval_res = gov.evaluasi_gaya(eskalasi="GREEN")
+    return {
+        "config": cfg.model_dump(),
+        "evaluasi": eval_res.model_dump(),
+    }
+
+
+@app.post("/api/v1/user/{user_id}/style")
+def simpan_preferensi_gaya(user_id: str, cfg: StyleConfig):
+    """Memperbarui preferensi gaya komunikasi eksplisit pengguna."""
+    cfg.user_id = user_id
+    _user_style_configs[user_id] = cfg
+    gov = StyleGovernorV2(config=cfg)
+    eval_res = gov.evaluasi_gaya(eskalasi="GREEN")
+    return {
+        "status": "tersimpan",
+        "config": cfg.model_dump(),
+        "evaluasi": eval_res.model_dump(),
+    }
+
+
+class TambahHomeworkRequest(BaseModel):
+    kategori: str = Field(description="napas | thought_record | values | aktivitas_ba")
+    deskripsi: str
+    tenggat_waktu: str | None = None
+
+
+class UpdateHomeworkStatusRequest(BaseModel):
+    status: str = Field(description="selesai | dilewati | pending")
+    refleksi: str | None = None
+
+
+@app.get("/api/v1/user/{user_id}/homework")
+def ambil_homework_user(user_id: str, pending_only: bool = False):
+    """Mengambil daftar tugas rumah terapeutik antar-sesi pengguna."""
+    if pending_only:
+        items = _homework_repo.ambil_tugas_pending(user_id)
+    else:
+        items = _homework_repo.ambil_riwayat_tugas(user_id)
+    return {"tugas": [t.model_dump() for t in items]}
+
+
+@app.post("/api/v1/user/{user_id}/homework")
+def tambah_homework_user(user_id: str, req: TambahHomeworkRequest):
+    """Membuat tugas mikro terapeutik baru untuk pengguna."""
+    item = _homework_repo.tambah_tugas(
+        user_id=user_id,
+        kategori=req.kategori,
+        deskripsi=req.deskripsi,
+        tenggat_waktu=req.tenggat_waktu,
+    )
+    return {"status": "tersimpan", "tugas": item.model_dump()}
+
+
+@app.patch("/api/v1/user/{user_id}/homework/{task_id}")
+def perbarui_homework_user(user_id: str, task_id: str, req: UpdateHomeworkStatusRequest):
+    """Memperbarui status pengerjaan tugas mikro antar-sesi."""
+    sukses = _homework_repo.perbarui_status(
+        task_id=task_id,
+        user_id=user_id,
+        status=req.status,
+        refleksi=req.refleksi,
+    )
+    if not sukses:
+        raise HTTPException(status_code=404, detail="Tugas tidak ditemukan.")
+    return {"status": "diperbarui", "task_id": task_id}
+
+
+@app.get("/api/v1/user/{user_id}/insights/pattern")
+def ambil_insight_pola_longitudinal(user_id: str, limit: int = 30):
+    """Mengambil analisis reduksi dimensi PCA & deteksi anomali mood pengguna."""
+    hasil = _pola_detektor.analisis_pengguna(user_id, limit_hari=limit)
+    return hasil.model_dump()
+
+
+# =====================================================================
+# ENDPOINTS EKOSISTEM, OBSERVABILITAS & HAK DATA (FASE 5)
+# =====================================================================
+_telemetri = TelemetriKlinis()
+_export_service = ExportService()
+
+
+@app.get("/metrics", response_class=PlainTextResponse)
+def prometheus_metrics():
+    """Eksposisi metrik performa & distribusi eskalasi keselamatan format Prometheus."""
+    return _telemetri.format_prometheus()
+
+
+@app.get("/api/v1/user/{user_id}/export")
+def ekspor_seluruh_data_user(user_id: str):
+    """Hak Portabilitas Data (UU PDP & GDPR): Ekspor seluruh riwayat data pengguna ke JSON."""
+    paket = _export_service.ekspor_data_pengguna(user_id)
+    return paket
+
+
+@app.post("/api/v1/user/{user_id}/prune")
+def bersihkan_data_ttl_user(
+    user_id: str,
+    durasi_hari: int = Query(30, ge=1, le=365, description="Masa retensi hari maksimal"),
+):
+    """Pembersihan berkala otomatis (TTL auto-pruning) berdasarkan masa retensi consent."""
+    laporan = _export_service.bersihkan_data_kedaluwarsa(user_id, durasi_hari_override=durasi_hari)
+    return {
+        "status": "selesai",
+        "user_id": user_id,
+        "laporan_pembersihan": laporan,
+        "rincian": laporan,
+    }
+
+
+@app.get("/api/v1/audit/report")
+def laporan_audit_klinis_rilis():
+    """Menjalankan evaluasi audit kelayakan rilis produksi biner GO/NO-GO (100 Red-Teaming cases)."""
+    laporan = PipelineAuditKlinis.jalankan_audit_penuh()
+    catat_audit_log(
+        tipe_peristiwa="audit_rilis_produksi",
+        eskalasi="GREEN",
+        metadata={"keputusan": laporan.keputusan, "siap": laporan.siap_produksi},
+    )
+    return laporan.model_dump()
+
+
 

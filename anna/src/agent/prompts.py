@@ -61,6 +61,7 @@ def build_system_prompt(
     memori_ringkasan: str | None = None,
     metadata: dict[str, Any] | None = None,
     hard_gate: bool = False,
+    instruksi_gaya: str | None = None,
 ) -> str:
     """Menyusun system prompt dinamis terkalibrasi untuk LangChain/Gemini."""
     if hard_gate or eskalasi in ("ORANGE", "KANDIDAT_RED", "RED"):
@@ -71,6 +72,8 @@ def build_system_prompt(
 
     bagian = [PROMPT_DASAR_KLINIS]
     bagian.append(f"\n[Pedoman Persona Aktif]\n{p_persona}")
+    if instruksi_gaya and not hard_gate:
+        bagian.append(f"\n[Pedoman Register Gaya Komunikasi]\n{instruksi_gaya}")
     bagian.append(f"\n[Tingkat Eskalasi Emosional: {eskalasi}]\n{p_eskalasi}")
 
     if topik:
